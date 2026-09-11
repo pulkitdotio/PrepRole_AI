@@ -4,6 +4,8 @@ const cors = require('cors');
 const { getAuthConfig } = require('./config/auth');
 const { getAllowedOrigins } = require('./config/origins');
 const { protectOrigin } = require('./middlewares/origin.middleware');
+const { ContentError } = require('./utils/content');
+const AppError = require('./utils/appError');
 
 // Validate before loading routes or opening a database/listening socket.
 getAuthConfig();
@@ -62,6 +64,22 @@ app.use((req, res) => {
 
 // Global error handler
 app.use((error, req, res, next) => {
+    if (error instanceof AppError) {
+        return res.status(error.statusCode).json({
+            message: error.message,
+            error: {
+                code: error.code,
+                message: error.message,
+                ...(error.details ? { details: error.details } : {})
+            }
+        });
+    }
+    if (error instanceof ContentError) {
+        return res.status(error.status).json({ message: error.message });
+    }
+    if (error.type === 'entity.too.large') {
+        return res.status(413).json({ message: 'Request body is too large' });
+    }
     // Do not log request bodies or database errors that can contain auth credentials.
     console.error('Request failed', { type: error.name, code: error.code });
 
@@ -72,21 +90,23 @@ app.use((error, req, res, next) => {
     }
 
     if (error.name === 'MulterError') {
+        if (error.code === 'LIMIT_FIELD_VALUE') {
+            return res.status(413).json({ message: 'Resume upload text fields are too large' });
+        }
         if (error.code === 'LIMIT_FILE_SIZE') {
-            return res.status(400).json({
+            return res.status(413).json({
                 message: 'Resume file must be smaller than 3MB'
             });
         }
 
         return res.status(400).json({
-            message: error.message
+            message: 'Invalid or oversized resume upload fields'
         });
     }
 
     if (error.name === 'ValidationError') {
         return res.status(400).json({
-            message: 'Validation failed',
-            errors: Object.values(error.errors).map((err) => err.message)
+            message: 'Validation failed'
         });
     }
 

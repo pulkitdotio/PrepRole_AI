@@ -57,6 +57,11 @@ function CreateInterview() {
   const validateStepOne = () => {
     const nextErrors = {};
 
+    if (values.jobTitle.length > 160 || values.companyName.length > 160 ||
+        values.jobDescription.length > 5000 || values.selfDescription.length > 2000) {
+      nextErrors.jobDescription = 'Please keep the job description within 5,000 characters, your introduction within 2,000, and titles within 160.';
+    }
+
     if (
       !values.jobTitle.trim()
     ) {
@@ -92,6 +97,8 @@ function CreateInterview() {
     if (!resume) {
       nextErrors.resume =
         'Please upload your resume.';
+    } else if (resume.size === 0) {
+      nextErrors.resume = 'Please choose a non-empty PDF.';
     } else if (
       resume.type !==
       'application/pdf'

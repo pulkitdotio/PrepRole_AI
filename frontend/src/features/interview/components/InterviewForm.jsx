@@ -56,6 +56,7 @@ function InterviewForm({
             )
           }
           error={errors.jobTitle}
+          maxLength={160}
           required
         />
 
@@ -72,6 +73,7 @@ function InterviewForm({
             )
           }
           error={errors.companyName}
+          maxLength={160}
         />
 
       </div>

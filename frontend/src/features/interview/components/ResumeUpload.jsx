@@ -15,7 +15,7 @@ function ResumeUpload({ file, onChange, error }) {
     if (droppedFile) onChange(droppedFile);
   };
 
-  const isValidFile = file && file.type === 'application/pdf' && file.size <= MAX_FILE_SIZE;
+  const isValidFile = file && file.type === 'application/pdf' && file.size > 0 && file.size <= MAX_FILE_SIZE;
 
   return (
     <div className="resume-upload">

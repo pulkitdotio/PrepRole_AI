@@ -1,174 +1,30 @@
 const mongoose = require('mongoose');
+const L = require('../config/contentLimits');
 
-const technicalQuestionSchema = new mongoose.Schema(
-    {
-        question: {
-            type: String,
-            required: [true, 'Question is required'],
-            trim: true
-        },
-
-        intention: {
-            type: String,
-            required: [true, 'Intention is required'],
-            trim: true
-        },
-
-        answer: {
-            type: String,
-            required: [true, 'Answer is required'],
-            trim: true
-        }
-    },
-    {
-        _id: false
-    }
-);
-
-const behavioralQuestionSchema = new mongoose.Schema(
-    {
-        question: {
-            type: String,
-            required: [true, 'Question is required'],
-            trim: true
-        },
-
-        intention: {
-            type: String,
-            required: [true, 'Intention is required'],
-            trim: true
-        },
-
-        answer: {
-            type: String,
-            required: [true, 'Answer is required'],
-            trim: true
-        }
-    },
-    {
-        _id: false
-    }
-);
-
-const skillGapSchema = new mongoose.Schema(
-    {
-        skill: {
-            type: String,
-            required: [true, 'Skill is required'],
-            trim: true
-        },
-
-        severity: {
-            type: String,
-            enum: ['low', 'medium', 'high'],
-            required: [true, 'Severity is required']
-        }
-    },
-    {
-        _id: false
-    }
-);
-
-const preparationPlanSchema = new mongoose.Schema(
-    {
-        day: {
-            type: Number,
-            required: [true, 'Day is required'],
-            min: 1
-        },
-
-        focus: {
-            type: String,
-            required: [true, 'Focus is required'],
-            trim: true
-        },
-
-        tasks: [
-            {
-                type: String,
-                required: true,
-                trim: true
-            }
-        ]
-    },
-    {
-        _id: false
-    }
-);
-
-const interviewReportSchema = new mongoose.Schema(
-    {
-        jobDescription: {
-            type: String,
-            required: [true, 'Job description is required'],
-            trim: true
-        },
-
-        resume: {
-            type: String,
-            required: [true, 'Resume is required']
-        },
-
-        selfDescription: {
-            type: String,
-            required: [true, 'Self description is required'],
-            trim: true
-        },
-
-        matchScore: {
-            type: Number,
-            min: 0,
-            max: 100,
-            required: true
-        },
-
-        technicalQuestions: {
-            type: [technicalQuestionSchema],
-            default: []
-        },
-
-        behavioralQuestions: {
-            type: [behavioralQuestionSchema],
-            default: []
-        },
-
-        skillGaps: {
-            type: [skillGapSchema],
-            default: []
-        },
-
-        preparationPlan: {
-            type: [preparationPlanSchema],
-            default: []
-        },
-
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'users',
-            required: true,
-            index: true
-        },
-
-        title: {
-            type: String,
-            required: [true, 'Title is required'],
-            trim: true
-        }
-    },
-    {
-        timestamps: true
-    }
-);
-
-interviewReportSchema.index({
-    userId: 1,
-    createdAt: -1
-});
-
-const InterviewReportModel =
-    mongoose.model(
-        'InterviewReport',
-        interviewReportSchema
-    );
-
-module.exports = InterviewReportModel;
+// Stored profile and model strings remain untrusted; never render them as markup.
+const text = max => ({ type: String, required: true, trim: true, maxlength: max });
+const boundedArray = (type, max) => ({ type: [type], default: [], validate: {
+    validator: value => value.length <= max, message: 'Too many entries'
+} });
+const questionSchema = new mongoose.Schema({
+    question: text(L.questionChars), intention: text(L.intentionChars), answer: text(L.answerChars)
+}, { _id: false, strict: 'throw' });
+const skillGapSchema = new mongoose.Schema({
+    skill: text(L.skillChars), severity: { type: String, enum: ['low', 'medium', 'high'], required: true }
+}, { _id: false, strict: 'throw' });
+const preparationPlanSchema = new mongoose.Schema({
+    day: { type: Number, required: true, min: 1, max: L.days, validate: Number.isInteger },
+    focus: text(L.focusChars), tasks: boundedArray(text(L.taskChars), L.tasks)
+}, { _id: false, strict: 'throw' });
+const interviewReportSchema = new mongoose.Schema({
+    jobDescription: text(L.jobChars), resume: text(L.resumeChars), selfDescription: text(L.selfChars),
+    matchScore: { type: Number, min: 0, max: 100, required: true },
+    technicalQuestions: boundedArray(questionSchema, L.questions),
+    behavioralQuestions: boundedArray(questionSchema, L.questions),
+    skillGaps: boundedArray(skillGapSchema, L.gaps),
+    preparationPlan: boundedArray(preparationPlanSchema, L.days),
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true, index: true },
+    title: text(L.titleChars)
+}, { timestamps: true, strict: 'throw' });
+interviewReportSchema.index({ userId: 1, createdAt: -1 });
+module.exports = mongoose.model('InterviewReport', interviewReportSchema);

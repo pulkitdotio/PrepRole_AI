@@ -32,14 +32,15 @@ This document records the local code audit completed after Phases 1–7. It is a
 - Removed a leftover AI success `console.info`; structured warning/error events remain and do not include prompts, response bodies, credentials, or source resumes.
 - Made frontend session expiration respond to the backend's explicit `AUTHENTICATION_REQUIRED` code on every protected API surface, including account settings. Expected login and password-confirmation failures remain visible and do not clear a valid session.
 - Moved tailored-resume actions onto the shared loading-aware Button component, adding consistent disabled and `aria-busy` behavior.
+- Removed provider-incompatible string/array constraint keywords from the JSON Schema sent to Gemini while retaining all bounds in the authoritative Zod validation boundary. PDF blob errors are decoded so the UI can display safe backend messages.
 - No release-blocking code issue remains from the automated audit. Human browser and content-quality checks below are still required before treating a specific local configuration as complete.
 
 ## Automated verification
 
 - Backend: `npm test` — 64 passed, 0 failed, including real bundled-Chromium PDF rendering and security regressions.
-- Frontend: `npm test` — 12 passed, 0 failed; `npm run lint` and `npm run build` passed.
+- Frontend: `npm test` — 13 passed, 0 failed; `npm run lint` and `npm run build` passed.
 - Dependencies: backend and frontend `npm audit --audit-level=low` each reported 0 vulnerabilities at audit time.
-- Local startup: the backend started against the configured local environment and returned 200 from `/health`; Vite started and served its root document. Both smoke processes were stopped after verification, and no Gemini request was made.
+- Local startup: the backend started against the configured local environment and returned 200 from `/health`; Vite started and served its root document. Both smoke processes were stopped after verification. One end-to-end Gemini/PDF check used synthetic fixture data only.
 - Repository: `git diff --check` passed. Synthetic PDFs were generated transiently and were not committed.
 
 ## Deliberate limitations and deployment-specific work

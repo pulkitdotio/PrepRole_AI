@@ -71,7 +71,19 @@ const resumeDataSchema = z.strictObject({
 function responseJsonSchema(schema) {
     const json = z.toJSONSchema(schema, { target: 'draft-7' });
     delete json.$schema;
-    return json;
+    // GenerateContent rejects these validation keywords for complex schemas.
+    // Zod remains the authoritative boundary and enforces every bound after generation.
+    const unsupported = new Set(['minLength', 'maxLength', 'minItems', 'maxItems']);
+    const toProviderSchema = value => {
+        if (Array.isArray(value)) return value.map(toProviderSchema);
+        if (!value || typeof value !== 'object') return value;
+        return Object.fromEntries(
+            Object.entries(value)
+                .filter(([key]) => !unsupported.has(key))
+                .map(([key, child]) => [key, toProviderSchema(child)])
+        );
+    };
+    return toProviderSchema(json);
 }
 
 module.exports = { interviewReportSchema, resumeDataSchema, responseJsonSchema };

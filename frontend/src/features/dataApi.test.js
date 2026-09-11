@@ -4,6 +4,7 @@ import api from '../services/api.js';
 import { deleteCurrentAccount } from './auth/auth.api.js';
 import { getDashboardStats, getRecentInterviews } from './dashboard/dashboard.api.js';
 import { deleteInterviewReport, getInterviewReports } from './interview/interview.api.js';
+import { decodeBlobError } from './resume/resume.api.js';
 
 test('data APIs send pagination, statistics and destructive requests to intended endpoints', async t => {
   const requests = [];
@@ -27,4 +28,20 @@ test('data APIs send pagination, statistics and destructive requests to intended
     { url: '/interview/report/507f1f77bcf86cd799439013', method: 'delete', params: undefined, data: undefined },
     { url: '/auth/account', method: 'delete', params: undefined, data: JSON.stringify({ password: ' password ' }) }
   ]);
+});
+
+test('PDF blob errors expose safe backend JSON messages', async () => {
+  const error = {
+    response: {
+      status: 502,
+      data: new Blob(
+        [JSON.stringify({ message: 'Unable to complete AI generation. Please try again later.' })],
+        { type: 'application/json; charset=utf-8' }
+      ),
+    },
+  };
+  assert.equal(
+    (await decodeBlobError(error)).response.data.message,
+    'Unable to complete AI generation. Please try again later.'
+  );
 });

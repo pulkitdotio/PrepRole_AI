@@ -90,7 +90,11 @@ test('parser enforces pages, text and cooperative time limits and always cleans 
 test('strict bounded output validation rejects malformed, huge and unexpected data', () => {
     assert.deepEqual(interviewReportSchema.parse(fixture.report()), fixture.report());
     assert.deepEqual(resumeDataSchema.parse(fixture.resume()), fixture.resume());
-    assert.equal(responseJsonSchema(resumeDataSchema).additionalProperties, false);
+    const providerSchema = responseJsonSchema(resumeDataSchema);
+    assert.equal(providerSchema.additionalProperties, false);
+    for (const unsupported of ['minLength', 'maxLength', 'minItems', 'maxItems']) {
+        assert.equal(JSON.stringify(providerSchema).includes(`\"${unsupported}\"`), false);
+    }
     for (const data of [{ ...fixture.report(), userId: 'attacker' }, { ...fixture.report(), title: 'x'.repeat(L.titleChars + 1) },
         { ...fixture.report(), technicalQuestions: Array(100).fill(fixture.report().technicalQuestions[0]) }]) {
         assert.throws(() => interviewReportSchema.parse(data));

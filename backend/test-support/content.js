@@ -7,11 +7,12 @@ function report() {
         preparationPlan: [1, 2, 3].map(day => ({ day, focus: 'Practice communication', tasks: ['Review a relevant real example.'] })) };
 }
 function resume() {
-    return { personalInfo: { name: 'Alex Candidate', headline: 'Customer Support Associate', contact: ['alex@example.com', 'Bengaluru, India'] },
+    return { personalInfo: { name: 'Alex Candidate', headline: 'Customer Support Associate',
+        email: 'alex@example.test', phone: '', location: 'Bengaluru, India', links: [] },
         summary: 'Customer-focused professional with experience resolving questions and documenting clear next steps.',
         experience: [{ title: 'Support Associate', organization: 'Example Company', dates: '2023–2025', location: 'Bengaluru', bullets: ['Responded to customer questions and maintained clear records.', 'Collaborated with colleagues to resolve complex requests.'] }],
         education: [{ title: 'Bachelor of Arts', organization: 'Example University', dates: '2023', location: '', bullets: [] }],
-        projects: [], skills: ['Communication', 'Troubleshooting', 'Documentation'], certifications: [] };
+        projects: [], skillGroups: [{ category: 'Core Skills', skills: ['Communication', 'Troubleshooting', 'Documentation'] }], certifications: [] };
 }
 const profile = { resume: 'Candidate with communication and customer support experience.', jobDescription: 'Customer support role requiring practical troubleshooting.', selfDescription: 'I enjoy helping customers solve problems.' };
 

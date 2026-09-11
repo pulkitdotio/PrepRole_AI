@@ -98,9 +98,26 @@ test('strict bounded output validation rejects malformed, huge and unexpected da
     const long = fixture.report(); long.technicalQuestions[0].answer = 'x'.repeat(L.answerChars + 1);
     assert.throws(() => interviewReportSchema.parse(long));
     assert.throws(() => resumeDataSchema.parse({ html: '<script>run()</script>' }));
+    const insecureLink = fixture.resume();
+    insecureLink.personalInfo.links.push({ label: 'Portfolio', url: 'http://example.test' });
+    assert.throws(() => resumeDataSchema.parse(insecureLink));
+    const duplicateSkill = fixture.resume();
+    duplicateSkill.skillGroups.push({ category: 'Tools', skills: ['communication'] });
+    assert.throws(() => resumeDataSchema.parse(duplicateSkill));
     for (const output of ['not JSON', 'before ' + JSON.stringify(fixture.report()), 'x'.repeat(L.aiResponseChars + 1)]) {
         assert.throws(() => parseResponse(output, interviewReportSchema));
     }
+});
+
+test('resume prompt requires concise truthful tailoring and supported skills and metrics', () => {
+    const instruction = buildPrompt('resume', fixture.profile).systemInstruction;
+    for (const requirement of [
+        'Never add a job keyword or technology absent from the candidate input',
+        'Do not invent metrics when the source has none',
+        'never convert projects into employment',
+        'full HTTPS URLs occur in candidate input',
+        'Return structured resume data, never HTML'
+    ]) assert.ok(instruction.includes(requirement));
 });
 
 test('model markup is literal text and cannot create elements, attributes, URLs or CSS', () => {

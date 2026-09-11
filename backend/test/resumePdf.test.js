@@ -46,7 +46,7 @@ test('real sandboxed Chromium renders a readable PDF with hostile names as liter
     if (!existsSync(await puppeteer.executablePath())) return t.skip('Bundled Chromium is not installed');
     const data = fixture.resume();
     data.personalInfo.name = '<script>alert(1)</script>';
-    data.personalInfo.contact.push('<img src="http://127.0.0.1:3000/private">');
+    data.personalInfo.location = '<img src="http://127.0.0.1:3000/private">';
     const pdf = await renderResumePDF(data);
     assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
     const parser = new PDFParse({ data: pdf, isEvalSupported: false });

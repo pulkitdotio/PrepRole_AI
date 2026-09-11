@@ -9,6 +9,8 @@ module.exports = Object.freeze({
     aiRequestMs: 45000, aiTotalMs: 120000,
     htmlBytes: 200000, renderMs: 45000, contentMs: 10000, pdfMs: 20000,
     generatedPdfBytes: 5 * 1024 * 1024,
-    resumeFieldChars: 200, summaryChars: 1500, resumeBulletChars: 500,
-    resumeEntries: 8, resumeBullets: 6, resumeSkills: 40
+    resumeFieldChars: 200, summaryChars: 600, resumeBulletChars: 360,
+    resumeEntries: 8, resumeBullets: 5, resumeProjects: 6,
+    resumeLinks: 4, resumeSkillGroups: 8, resumeSkillsPerGroup: 12,
+    resumeSkills: 48, resumeCertifications: 12
 });

@@ -18,18 +18,54 @@ const interviewReportSchema = z.strictObject({
 });
 const short = () => text(L.resumeFieldChars, 0);
 const entry = z.strictObject({
-    title: short(), organization: short(), location: short(), dates: short(),
+    title: text(L.resumeFieldChars), organization: short(), location: short(), dates: short(),
     bullets: z.array(text(L.resumeBulletChars)).max(L.resumeBullets)
 });
+const project = z.strictObject({
+    title: text(L.resumeFieldChars), organization: short(), dates: short(),
+    technologies: z.array(text(L.skillChars)).max(10),
+    bullets: z.array(text(L.resumeBulletChars)).max(3)
+});
+const professionalLink = z.strictObject({
+    label: text(40),
+    url: text(L.resumeFieldChars).refine(value => {
+        try {
+            const url = new URL(value);
+            return /^https:\/\//i.test(value) && url.protocol === 'https:' && !url.username && !url.password;
+        } catch { return false; }
+    }, 'Professional links must use HTTPS')
+});
+const skillGroup = z.strictObject({
+    category: text(40),
+    skills: z.array(text(L.skillChars)).min(1).max(L.resumeSkillsPerGroup)
+});
 const resumeDataSchema = z.strictObject({
-    personalInfo: z.strictObject({ name: text(L.resumeFieldChars), headline: short(),
-        contact: z.array(text(L.resumeFieldChars)).max(6) }),
+    personalInfo: z.strictObject({
+        name: text(L.resumeFieldChars), headline: short(), email: short(), phone: short(), location: short(),
+        links: z.array(professionalLink).max(L.resumeLinks)
+    }),
     summary: text(L.summaryChars, 0),
     experience: z.array(entry).max(L.resumeEntries),
     education: z.array(entry).max(L.resumeEntries),
-    projects: z.array(entry).max(L.resumeEntries),
-    skills: z.array(text(L.skillChars)).max(L.resumeSkills),
-    certifications: z.array(text(L.resumeFieldChars)).max(12)
+    projects: z.array(project).max(L.resumeProjects),
+    skillGroups: z.array(skillGroup).max(L.resumeSkillGroups),
+    certifications: z.array(text(L.resumeFieldChars)).max(L.resumeCertifications)
+}).superRefine((data, context) => {
+    const categories = new Set();
+    const skills = new Set();
+    let skillCount = 0;
+    data.skillGroups.forEach((group, groupIndex) => {
+        const category = group.category.toLocaleLowerCase();
+        if (categories.has(category)) context.addIssue({ code: 'custom', path: ['skillGroups', groupIndex, 'category'], message: 'Duplicate skill category' });
+        categories.add(category);
+        group.skills.forEach((skill, skillIndex) => {
+            skillCount += 1;
+            const normalized = skill.toLocaleLowerCase();
+            if (skills.has(normalized)) context.addIssue({ code: 'custom', path: ['skillGroups', groupIndex, 'skills', skillIndex], message: 'Duplicate skill' });
+            skills.add(normalized);
+        });
+    });
+    if (skillCount > L.resumeSkills) context.addIssue({ code: 'too_big', origin: 'array', maximum: L.resumeSkills, inclusive: true, path: ['skillGroups'], message: 'Too many skills' });
 });
 
 function responseJsonSchema(schema) {

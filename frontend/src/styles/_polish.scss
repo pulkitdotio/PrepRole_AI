@@ -37,6 +37,17 @@
 .form-textarea { min-height: 130px; font-size: 14px; }
 .field-error { font-size: 12px; }
 .page-error { margin-bottom: 18px; }
+.page-error--with-action,
+.dashboard-data-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+
+  .error-message { flex: 1; }
+  .button { flex: 0 0 auto; }
+}
 
 .auth-page { background: $bg-primary; }
 .auth-hero {
@@ -172,6 +183,8 @@ body {
   .create-banner { padding: 22px 20px; }
   .create-banner h2 { font-size: 17px; }
   .resume-page__header, .report-header, .report-tabs, .resume-layout { padding-left: 16px; padding-right: 16px; }
+  .page-error--with-action,
+  .dashboard-data-error { align-items: stretch; flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {

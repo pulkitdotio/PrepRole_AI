@@ -11,6 +11,7 @@ import {
 
 import {
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -27,6 +28,8 @@ import {
 
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import PageLoader from '../../../components/common/PageLoader';
+import Button from '../../../components/ui/Button';
+import { getApiErrorMessage, isCanceledRequest } from '../../../services/apiError';
 
 function TailoredResume() {
   const {
@@ -40,20 +43,24 @@ function TailoredResume() {
     useState('');
 
   const [loading, setLoading] =
-    useState(true);
+    useState(Boolean(interviewId));
 
   const [generating, setGenerating] =
     useState(false);
 
   const [error, setError] =
     useState('');
+  const [loadError, setLoadError] = useState(interviewId ? '' : 'Interview report not found.');
+  const [reloadKey, setReloadKey] = useState(0);
+  const generatingRef = useRef(false);
 
   const generate = async () => {
-    if (!interviewId) {
+    if (!interviewId || generatingRef.current) {
       return;
     }
 
     try {
+      generatingRef.current = true;
       setGenerating(true);
       setError('');
 
@@ -77,52 +84,48 @@ function TailoredResume() {
         return nextUrl;
       });
     } catch (error) {
-      setError(
-        error?.response?.data
-          ?.message ||
-          'Unable to generate the tailored resume.'
-      );
+      setError(getApiErrorMessage(error, 'Unable to generate the tailored resume.'));
     } finally {
+      generatingRef.current = false;
       setGenerating(false);
     }
   };
 
   useEffect(() => {
-    let mounted = true;
+    const controller = new AbortController();
 
     async function loadReport() {
       try {
+        setLoading(true);
+        setLoadError('');
         const response =
           await getInterviewReport(
-            interviewId
+            interviewId,
+            { signal: controller.signal }
           );
 
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setReport(
             response?.interviewReport
           );
         }
       } catch (error) {
-        if (mounted) {
-          setError(
-            error?.response?.data
-              ?.message ||
-              'Unable to load interview report.'
-          );
+        if (!controller.signal.aborted && !isCanceledRequest(error)) {
+          setLoadError(getApiErrorMessage(error, 'Unable to load interview report.'));
         }
       } finally {
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setLoading(false);
         }
       }
     }
 
-    loadReport();
+    if (interviewId) {
+      loadReport();
+    }
 
-    return () => {
-      mounted = false;
-    };
-  }, [interviewId]);
+    return () => controller.abort();
+  }, [interviewId, reloadKey]);
 
   useEffect(() => {
     return () => {
@@ -135,7 +138,22 @@ function TailoredResume() {
   }, [pdfUrl]);
 
   if (loading) {
-    return <PageLoader />;
+    return <PageLoader message="Loading resume details…" />;
+  }
+
+  if (loadError || !report) {
+    return (
+      <div className="report-error-page">
+        <ErrorMessage message={loadError || 'Interview report not found.'} />
+        <Link to="/interviews" className="button button--primary">
+          <ArrowLeft size={16} />
+          Back to Interviews
+        </Link>
+        {interviewId && (
+          <Button variant="secondary" onClick={() => setReloadKey(key => key + 1)}>Retry</Button>
+        )}
+      </div>
+    );
   }
 
   return (

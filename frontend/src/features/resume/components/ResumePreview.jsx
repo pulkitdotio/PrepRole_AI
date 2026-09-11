@@ -9,14 +9,14 @@ function ResumePreview({
 }) {
   if (loading) {
     return (
-      <div className="resume-preview resume-preview--loading">
+      <div className="resume-preview resume-preview--loading" role="status" aria-live="polite">
         <LoaderCircle
           size={30}
           className="spin"
         />
 
         <p>
-          Generating your tailored resume...
+          Generating your tailored resume… This may take a moment.
         </p>
       </div>
     );

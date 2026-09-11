@@ -22,6 +22,8 @@ import {
 import Badge from '../../../components/ui/Badge';
 import PageLoader from '../../../components/common/PageLoader';
 import ErrorMessage from '../../../components/common/ErrorMessage';
+import Button from '../../../components/ui/Button';
+import { getApiErrorMessage, isCanceledRequest } from '../../../services/apiError';
 
 import {
   getInterviewReport,
@@ -213,41 +215,40 @@ function InterviewReport() {
     useState(null);
 
   const [loading, setLoading] =
-    useState(true);
+    useState(Boolean(interviewId));
 
   const [error, setError] =
-    useState('');
+    useState(interviewId ? '' : 'Interview report not found.');
 
   const [activeTab, setActiveTab] =
     useState('overview');
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    let mounted = true;
+    const controller = new AbortController();
 
     async function loadReport() {
       try {
+        setLoading(true);
         setError('');
 
         const response =
           await getInterviewReport(
-            interviewId
+            interviewId,
+            { signal: controller.signal }
           );
 
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setReport(
             response?.interviewReport
           );
         }
       } catch (error) {
-        if (mounted) {
-          setError(
-            error?.response?.data
-              ?.message ||
-              'Unable to load this interview report.'
-          );
+        if (!controller.signal.aborted && !isCanceledRequest(error)) {
+          setError(getApiErrorMessage(error, 'Unable to load this interview report.'));
         }
       } finally {
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setLoading(false);
         }
       }
@@ -257,13 +258,11 @@ function InterviewReport() {
       loadReport();
     }
 
-    return () => {
-      mounted = false;
-    };
-  }, [interviewId]);
+    return () => controller.abort();
+  }, [interviewId, reloadKey]);
 
   if (loading) {
-    return <PageLoader />;
+    return <PageLoader message="Loading your interview report…" />;
   }
 
   if (error || !report) {
@@ -283,6 +282,12 @@ function InterviewReport() {
           <ArrowLeft size={16} />
           Back to Interviews
         </Link>
+
+        {interviewId && (
+          <Button variant="secondary" onClick={() => setReloadKey(key => key + 1)}>
+            Retry
+          </Button>
+        )}
       </div>
     );
   }

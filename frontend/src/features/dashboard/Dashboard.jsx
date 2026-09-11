@@ -7,43 +7,51 @@ import RecentInterviews from './components/RecentInterviews';
 import CreateInterviewBanner from './components/CreateInterviewBanner';
 import PageLoader from '../../components/common/PageLoader';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import Button from '../../components/ui/Button';
 import { getDashboardStats, getRecentInterviews } from './dashboard.api';
+import { getApiErrorMessage, isCanceledRequest } from '../../services/apiError';
 
 function Dashboard() {
   const [interviews, setInterviews] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [statsError, setStatsError] = useState('');
+  const [recentError, setRecentError] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    let mounted = true;
+    const controller = new AbortController();
 
     async function loadDashboard() {
-      try {
-        setError('');
-        const [statsResult, recentResult] = await Promise.allSettled([
-          getDashboardStats(),
-          getRecentInterviews(),
-        ]);
-        if (!mounted) return;
-        if (statsResult.status === 'fulfilled') setStats(statsResult.value?.stats || null);
-        if (recentResult.status === 'fulfilled') setInterviews(recentResult.value?.interviewReports || []);
-        if (statsResult.status === 'rejected' || recentResult.status === 'rejected') {
-          const failure = statsResult.status === 'rejected' ? statsResult.reason : recentResult.reason;
-          setError(failure?.response?.data?.message || 'Some dashboard data could not be loaded.');
-        }
-      } catch {
-        if (mounted) setError('Unable to load dashboard data.');
-      } finally {
-        if (mounted) setLoading(false);
+      setLoading(true);
+      setStatsError('');
+      setRecentError('');
+      const [statsResult, recentResult] = await Promise.allSettled([
+        getDashboardStats({ signal: controller.signal }),
+        getRecentInterviews({ signal: controller.signal }),
+      ]);
+      if (controller.signal.aborted) return;
+
+      if (statsResult.status === 'fulfilled') {
+        setStats(statsResult.value?.stats || null);
+      } else if (!isCanceledRequest(statsResult.reason)) {
+        setStatsError(getApiErrorMessage(statsResult.reason, 'Unable to load interview statistics.'));
       }
+
+      if (recentResult.status === 'fulfilled') {
+        setInterviews(recentResult.value?.interviewReports || []);
+      } else if (!isCanceledRequest(recentResult.reason)) {
+        setRecentError(getApiErrorMessage(recentResult.reason, 'Unable to load recent interviews.'));
+      }
+
+      setLoading(false);
     }
 
     loadDashboard();
-    return () => { mounted = false; };
-  }, []);
+    return () => controller.abort();
+  }, [reloadKey]);
 
-  if (loading) return <PageLoader />;
+  if (loading) return <PageLoader message="Loading your workspace…" />;
 
   return (
     <div className="dashboard-page">
@@ -57,10 +65,19 @@ function Dashboard() {
           <p className="dashboard-motivation">“Preparation today.<br />Confidence tomorrow.”</p>
         </section>
 
-        {error && <div className="page-error"><ErrorMessage message={error} /></div>}
         <CreateInterviewBanner />
-        <DashboardStats stats={stats} />
-        <RecentInterviews interviews={interviews} />
+        {statsError ? (
+          <div className="dashboard-data-error">
+            <ErrorMessage message={statsError} />
+            <Button variant="secondary" size="small" onClick={() => setReloadKey(key => key + 1)}>Retry dashboard</Button>
+          </div>
+        ) : <DashboardStats stats={stats} />}
+        {recentError ? (
+          <div className="dashboard-data-error">
+            <ErrorMessage message={recentError} />
+            <Button variant="secondary" size="small" onClick={() => setReloadKey(key => key + 1)}>Retry recent interviews</Button>
+          </div>
+        ) : <RecentInterviews interviews={interviews} />}
       </div>
     </div>
   );

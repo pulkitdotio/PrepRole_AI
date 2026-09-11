@@ -3,17 +3,18 @@ import InterviewCard from './InterviewCard';
 function InterviewList({
   interviews = [],
   onDelete,
+  emptyTitle = 'No interview reports yet',
+  emptyMessage = 'Your generated interview reports will appear here.',
 }) {
   if (!interviews.length) {
     return (
       <div className="history-empty">
         <h3>
-          No interview reports yet
+          {emptyTitle}
         </h3>
 
         <p>
-          Your generated interview reports
-          will appear here.
+          {emptyMessage}
         </p>
       </div>
     );

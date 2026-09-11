@@ -19,12 +19,14 @@ import InterviewList from '../components/InterviewList';
 import PageLoader from '../../../components/common/PageLoader';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import ConfirmDialog from '../../../components/common/ConfirmDialog';
+import Button from '../../../components/ui/Button';
 
 import {
   getInterviewReports,
   deleteInterviewReport,
 } from '../interview.api';
 import { HISTORY_PAGE_SIZE, parseHistoryPage } from '../pagination';
+import { getApiErrorMessage, isCanceledRequest } from '../../../services/apiError';
 
 const emptyPagination = {
   page: 1, limit: HISTORY_PAGE_SIZE, totalItems: 0, totalPages: 0,
@@ -48,6 +50,7 @@ function InterviewHistory() {
   const [pagination, setPagination] = useState(emptyPagination);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const requested = searchParams.get('page');
@@ -57,14 +60,16 @@ function InterviewHistory() {
   }, [page, searchParams, setSearchParams]);
 
   useEffect(() => {
-    let mounted = true;
+    const controller = new AbortController();
 
     async function loadReports() {
       try {
+        setLoading(true);
+        setError('');
         const response =
-          await getInterviewReports({ page, limit: HISTORY_PAGE_SIZE });
+          await getInterviewReports({ page, limit: HISTORY_PAGE_SIZE, signal: controller.signal });
 
-        if (mounted) {
+        if (!controller.signal.aborted) {
           const nextPagination = response?.pagination;
           if (nextPagination?.totalPages > 0 && page > nextPagination.totalPages) {
             setSearchParams(
@@ -80,15 +85,11 @@ function InterviewHistory() {
           setPagination(nextPagination || emptyPagination);
         }
       } catch (error) {
-        if (mounted) {
-          setError(
-            error?.response?.data
-              ?.message ||
-              'Unable to load interview history.'
-          );
+        if (!controller.signal.aborted && !isCanceledRequest(error)) {
+          setError(getApiErrorMessage(error, 'Unable to load interview history.'));
         }
       } finally {
-        if (mounted) {
+        if (!controller.signal.aborted) {
           setLoading(false);
         }
       }
@@ -97,9 +98,9 @@ function InterviewHistory() {
     loadReports();
 
     return () => {
-      mounted = false;
+      controller.abort();
     };
-  }, [page, setSearchParams]);
+  }, [page, reloadKey, setSearchParams]);
 
   const goToPage = (nextPage) => {
     setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {});
@@ -129,7 +130,7 @@ function InterviewHistory() {
       }
       setPendingDelete(null);
     } catch (requestError) {
-      setError(requestError?.response?.data?.message || 'Unable to delete the interview report.');
+      setError(getApiErrorMessage(requestError, 'Unable to delete the interview report.'));
     } finally {
       setDeleting(false);
     }
@@ -153,7 +154,7 @@ function InterviewHistory() {
     }, [interviews, search]);
 
   if (loading) {
-    return <PageLoader />;
+    return <PageLoader message="Loading interview history…" />;
   }
 
   return (
@@ -187,9 +188,10 @@ function InterviewHistory() {
       </header>
 
       {error && (
-        <ErrorMessage
-          message={error}
-        />
+        <div className="page-error page-error--with-action">
+          <ErrorMessage message={error} />
+          <Button variant="secondary" size="small" onClick={() => setReloadKey(key => key + 1)}>Retry</Button>
+        </div>
       )}
 
       <div className="history-toolbar">
@@ -211,11 +213,15 @@ function InterviewHistory() {
 
       </div>
 
+      <p className="history-search-note">Search covers the reports shown on this page.</p>
+
       <InterviewList
         interviews={
           filteredInterviews
         }
         onDelete={setPendingDelete}
+        emptyTitle={search.trim() ? 'No matches on this page' : 'No interview reports yet'}
+        emptyMessage={search.trim() ? 'Try another title or move to a different history page.' : 'Your generated interview reports will appear here.'}
       />
 
       {pagination.totalPages > 0 && (

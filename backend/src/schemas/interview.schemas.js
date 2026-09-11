@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { z } = require('zod');
 const L = require('../config/contentLimits');
+const pagination = require('../config/pagination');
 
 const requiredText = (label, maximum) => z.string()
     .min(1, `${label} is required`)
@@ -18,9 +19,15 @@ const objectId = z.string().refine(
 
 const interviewReportParamsSchema = z.strictObject({ interviewId: objectId });
 const resumePdfParamsSchema = z.strictObject({ interviewReportId: objectId });
+const interviewHistoryQuerySchema = z.strictObject({
+    page: z.coerce.number().int().min(1).default(pagination.interviewDefaultPage),
+    limit: z.coerce.number().int().min(1).max(pagination.interviewMaximumLimit)
+        .default(pagination.interviewDefaultLimit)
+});
 
 module.exports = {
     createInterviewBodySchema,
     interviewReportParamsSchema,
-    resumePdfParamsSchema
+    resumePdfParamsSchema,
+    interviewHistoryQuerySchema
 };

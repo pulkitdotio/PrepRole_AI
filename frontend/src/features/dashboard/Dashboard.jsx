@@ -7,10 +7,11 @@ import RecentInterviews from './components/RecentInterviews';
 import CreateInterviewBanner from './components/CreateInterviewBanner';
 import PageLoader from '../../components/common/PageLoader';
 import ErrorMessage from '../../components/common/ErrorMessage';
-import { getInterviews } from './dashboard.api';
+import { getDashboardStats, getRecentInterviews } from './dashboard.api';
 
 function Dashboard() {
   const [interviews, setInterviews] = useState([]);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -20,12 +21,19 @@ function Dashboard() {
     async function loadDashboard() {
       try {
         setError('');
-        const response = await getInterviews();
-        if (mounted) setInterviews(response?.interviewReports || []);
-      } catch (requestError) {
-        if (mounted) {
-          setError(requestError?.response?.data?.message || 'Unable to load dashboard data.');
+        const [statsResult, recentResult] = await Promise.allSettled([
+          getDashboardStats(),
+          getRecentInterviews(),
+        ]);
+        if (!mounted) return;
+        if (statsResult.status === 'fulfilled') setStats(statsResult.value?.stats || null);
+        if (recentResult.status === 'fulfilled') setInterviews(recentResult.value?.interviewReports || []);
+        if (statsResult.status === 'rejected' || recentResult.status === 'rejected') {
+          const failure = statsResult.status === 'rejected' ? statsResult.reason : recentResult.reason;
+          setError(failure?.response?.data?.message || 'Some dashboard data could not be loaded.');
         }
+      } catch {
+        if (mounted) setError('Unable to load dashboard data.');
       } finally {
         if (mounted) setLoading(false);
       }
@@ -51,7 +59,7 @@ function Dashboard() {
 
         {error && <div className="page-error"><ErrorMessage message={error} /></div>}
         <CreateInterviewBanner />
-        <DashboardStats interviews={interviews} />
+        <DashboardStats stats={stats} />
         <RecentInterviews interviews={interviews} />
       </div>
     </div>

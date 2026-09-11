@@ -6,42 +6,12 @@ import {
 } from 'lucide-react';
 
 function DashboardStats({
-  interviews = [],
+  stats: dashboardStats,
 }) {
-  const total = interviews.length;
-
-  /*
-   * Every record returned by GET /interview/
-   * is an already-generated interview report.
-   */
-  const completed = interviews.length;
-
-  const scores = interviews
-    .map(
-      (interview) =>
-        interview?.matchScore
-    )
-    .filter(
-      (score) =>
-        typeof score === 'number' &&
-        !Number.isNaN(score)
-    );
-
-  const averageScore =
-    scores.length > 0
-      ? Math.round(
-          scores.reduce(
-            (sum, score) =>
-              sum + score,
-            0
-          ) / scores.length
-        )
-      : 0;
-
-  const bestScore =
-    scores.length > 0
-      ? Math.max(...scores)
-      : 0;
+  const total = dashboardStats?.totalInterviews ?? 0;
+  const completed = dashboardStats?.completedInterviews ?? 0;
+  const averageScore = dashboardStats?.averageMatchScore ?? 0;
+  const bestScore = dashboardStats?.bestMatchScore ?? 0;
 
   const stats = [
     {

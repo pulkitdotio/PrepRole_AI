@@ -5,6 +5,7 @@ import {
 
 import {
   Link,
+  useSearchParams,
 } from 'react-router';
 
 import {
@@ -21,8 +22,16 @@ import ErrorMessage from '../../../components/common/ErrorMessage';
 import {
   getInterviewReports,
 } from '../interview.api';
+import { HISTORY_PAGE_SIZE, parseHistoryPage } from '../pagination';
+
+const emptyPagination = {
+  page: 1, limit: HISTORY_PAGE_SIZE, totalItems: 0, totalPages: 0,
+  hasNextPage: false, hasPreviousPage: false,
+};
 
 function InterviewHistory() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseHistoryPage(searchParams.get('page'));
   const [interviews, setInterviews] =
     useState([]);
 
@@ -34,6 +43,14 @@ function InterviewHistory() {
 
   const [error, setError] =
     useState('');
+  const [pagination, setPagination] = useState(emptyPagination);
+
+  useEffect(() => {
+    const requested = searchParams.get('page');
+    if (requested !== null && String(page) !== requested) {
+      setSearchParams(page > 1 ? { page: String(page) } : {}, { replace: true });
+    }
+  }, [page, searchParams, setSearchParams]);
 
   useEffect(() => {
     let mounted = true;
@@ -41,13 +58,22 @@ function InterviewHistory() {
     async function loadReports() {
       try {
         const response =
-          await getInterviewReports();
+          await getInterviewReports({ page, limit: HISTORY_PAGE_SIZE });
 
         if (mounted) {
+          const nextPagination = response?.pagination;
+          if (nextPagination?.totalPages > 0 && page > nextPagination.totalPages) {
+            setSearchParams(
+              nextPagination.totalPages > 1 ? { page: String(nextPagination.totalPages) } : {},
+              { replace: true }
+            );
+            return;
+          }
           setInterviews(
             response?.interviewReports ||
               []
           );
+          setPagination(nextPagination || emptyPagination);
         }
       } catch (error) {
         if (mounted) {
@@ -69,7 +95,11 @@ function InterviewHistory() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [page, setSearchParams]);
+
+  const goToPage = (nextPage) => {
+    setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {});
+  };
 
   const filteredInterviews =
     useMemo(() => {
@@ -135,7 +165,7 @@ function InterviewHistory() {
 
           <input
             type="search"
-            placeholder="Search interviews..."
+            placeholder="Search this page..."
             value={search}
             onChange={(event) =>
               setSearch(
@@ -152,6 +182,30 @@ function InterviewHistory() {
           filteredInterviews
         }
       />
+
+      {pagination.totalPages > 0 && (
+        <nav className="history-pagination" aria-label="Interview history pages">
+          <button
+            type="button"
+            className="button button--secondary button--small"
+            disabled={!pagination.hasPreviousPage || loading}
+            onClick={() => goToPage(page - 1)}
+          >
+            Previous
+          </button>
+          <span aria-live="polite">
+            Page {pagination.page} of {pagination.totalPages}
+          </span>
+          <button
+            type="button"
+            className="button button--secondary button--small"
+            disabled={!pagination.hasNextPage || loading}
+            onClick={() => goToPage(page + 1)}
+          >
+            Next
+          </button>
+        </nav>
+      )}
 
     </div>
   );

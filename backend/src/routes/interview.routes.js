@@ -7,7 +7,8 @@ const { validate } = require('../middlewares/validate.middleware');
 const {
     createInterviewBodySchema,
     interviewReportParamsSchema,
-    resumePdfParamsSchema
+    resumePdfParamsSchema,
+    interviewHistoryQuerySchema
 } = require('../schemas/interview.schemas');
 const { expensiveOperationLimiter } = require('../middlewares/rateLimit.middleware');
 
@@ -30,8 +31,15 @@ interviewRouter.get(
 );
 
 interviewRouter.get(
+    '/stats',
+    authMiddleware,
+    interviewController.getInterviewStats
+);
+
+interviewRouter.get(
     '/',
     authMiddleware,
+    validate({ query: interviewHistoryQuerySchema }),
     interviewController.getAllInterviewReports
 );
 

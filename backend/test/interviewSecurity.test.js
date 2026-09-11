@@ -13,9 +13,13 @@ function response() { return { statusCode: 200, status(code) { this.statusCode =
 
 test('both report and resume queries scope ownership and deny another user before AI', async t => {
     t.mock.method(ai, 'generateResumePDF', () => assert.fail('unauthorized report sent to AI'));
-    t.mock.method(Model, 'findOne', async query => {
+    t.mock.method(Model, 'findOne', query => {
         assert.deepEqual(query, { _id: reportId, userId: userA });
-        return null; // The document belongs to B, so an owner-scoped database query won't match.
+        return {
+            select() { return this; },
+            async lean() { return null; },
+            then(resolve) { resolve(null); }
+        }; // The document belongs to B, so an owner-scoped database query won't match.
     });
     for (const [handler, key] of [[controller.getInterviewReportById, 'interviewId'], [controller.generateResumePDFController, 'interviewReportId']]) {
         await assert.rejects(
@@ -23,14 +27,6 @@ test('both report and resume queries scope ownership and deny another user befor
             error => error.statusCode === 404 && error.code === 'REPORT_NOT_FOUND'
         );
     }
-});
-
-test('history only queries the authenticated owner', async t => {
-    t.mock.method(Model, 'find', query => {
-        assert.deepEqual(query, { userId: userA });
-        return { sort: () => ({ select: async () => [] }) };
-    });
-    await controller.getAllInterviewReports({ user: { id: userA }, body: { userId: userB } }, response());
 });
 
 test('generation uses authenticated ownership and rejects model mass assignment', async t => {

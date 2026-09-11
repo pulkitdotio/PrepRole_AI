@@ -40,12 +40,12 @@ export async function generateInterviewReport({
 }
 
 /**
- * Get all reports belonging to
- * the authenticated user.
+ * Get one page of report summaries belonging to the authenticated user.
  */
-export async function getInterviewReports() {
+export async function getInterviewReports({ page = 1, limit = 10 } = {}) {
   const response = await api.get(
-    '/interview/'
+    '/interview/',
+    { params: { page, limit } }
   );
 
   return response.data;
@@ -61,5 +61,10 @@ export async function getInterviewReport(
     `/interview/report/${interviewId}`
   );
 
+  return response.data;
+}
+
+export async function deleteInterviewReport(interviewId) {
+  const response = await api.delete(`/interview/report/${interviewId}`);
   return response.data;
 }

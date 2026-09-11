@@ -15,7 +15,16 @@ function validate(schemas) {
         try {
             for (const location of ['body', 'params', 'query']) {
                 if (schemas[location]) {
-                    req[location] = schemas[location].parse(req[location]);
+                    const parsed = schemas[location].parse(req[location]);
+                    if (location === 'query') {
+                        Object.defineProperty(req, 'query', {
+                            value: parsed,
+                            configurable: true,
+                            enumerable: true
+                        });
+                    } else {
+                        req[location] = parsed;
+                    }
                 }
             }
             next();

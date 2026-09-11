@@ -29,9 +29,18 @@ async function renderResumePDF(data, { launcher = puppeteer } = {}) {
         });
         await page.setOfflineMode(true);
         await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: L.contentMs });
+        const hasHorizontalOverflow = await page.evaluate(() => {
+            const viewportWidth = document.documentElement.clientWidth;
+            return document.documentElement.scrollWidth > viewportWidth + 1 ||
+                [...document.body.querySelectorAll('*')].some(element => {
+                    const box = element.getBoundingClientRect();
+                    return box.left < -1 || box.right > viewportWidth + 1;
+                });
+        });
+        if (hasHorizontalOverflow) throw new Error('Resume layout exceeds printable width');
         const pdf = Buffer.from(await page.pdf({
             format: 'A4', preferCSSPageSize: true, printBackground: true,
-            timeout: L.pdfMs, waitForFonts: false
+            displayHeaderFooter: false, timeout: L.pdfMs, waitForFonts: false
         }));
         if (pdf.length > L.generatedPdfBytes) throw new Error('PDF exceeds size budget');
         return pdf;

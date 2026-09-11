@@ -6,9 +6,20 @@ const { PDFParse } = require('pdf-parse');
 const { renderResumePDF } = require('../src/services/resumePdf.service');
 const fixture = require('../test-support/content');
 
+async function readPdf(pdf, pages = []) {
+    const parser = new PDFParse({ data: pdf, isEvalSupported: false });
+    try {
+        const info = await parser.getInfo();
+        const text = (await parser.getText()).text;
+        const pageText = [];
+        for (const page of pages) pageText.push((await parser.getText({ partial: [page] })).text);
+        return { pageCount: info.total, text, pageText };
+    } finally { await parser.destroy(); }
+}
+
 test('renderer disables JS, denies all requests and closes page/browser after failure', async t => {
     t.mock.method(console, 'warn', () => {});
-    for (const failAt of ['newPage', 'setContent', 'pdf', 'none']) {
+    for (const failAt of ['newPage', 'setContent', 'overflow', 'pdf', 'none']) {
         let pageClosed = false;
         let browserClosed = false;
         let aborted = 0;
@@ -19,6 +30,7 @@ test('renderer disables JS, denies all requests and closes page/browser after fa
             async setBypassServiceWorker(value) { assert.equal(value, true); },
             async setRequestInterception(value) { assert.equal(value, true); },
             async setOfflineMode(value) { assert.equal(value, true); },
+            async evaluate(callback) { assert.equal(typeof callback, 'function'); return failAt === 'overflow'; },
             on(event, callback) {
                 assert.equal(event, 'request');
                 for (const url of ['http://evil.example', 'https://example.com', 'http://127.0.0.1', 'http://[::1]', 'http://169.254.169.254', 'file:///etc/passwd', 'data:text/html,x', 'ws://localhost', 'ftp://example.com']) {
@@ -26,7 +38,7 @@ test('renderer disables JS, denies all requests and closes page/browser after fa
                 }
             },
             async setContent(html, options) { assert.ok(options.timeout > 0); assert.ok(html.includes('default-src')); if (failAt === 'setContent') throw new Error('private html'); },
-            async pdf(options) { assert.ok(options.timeout > 0); if (failAt === 'pdf') throw new Error('private chromium details'); return Buffer.from('%PDF-output'); },
+            async pdf(options) { assert.ok(options.timeout > 0); assert.equal(options.displayHeaderFooter, false); if (failAt === 'pdf') throw new Error('private chromium details'); return Buffer.from('%PDF-output'); },
             async close() { pageClosed = true; }
         };
         const launcher = { launch: async options => {
@@ -49,13 +61,31 @@ test('real sandboxed Chromium renders a readable PDF with hostile names as liter
     data.personalInfo.location = '<img src="http://127.0.0.1:3000/private">';
     const pdf = await renderResumePDF(data);
     assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
-    const parser = new PDFParse({ data: pdf, isEvalSupported: false });
-    try {
-        const info = await parser.getInfo();
-        assert.ok(info.total >= 1 && info.total <= 2);
-        const result = await parser.getText();
-        assert.ok(result.text.includes('<script>alert(1)</script>'));
-        assert.ok(result.text.includes('Customer Support Associate'));
-        assert.ok(result.text.includes('127.0.0.1:3000/private'));
-    } finally { await parser.destroy(); }
+    const result = await readPdf(pdf);
+    assert.ok(result.pageCount >= 1 && result.pageCount <= 2);
+    assert.ok(result.text.includes('<script>alert(1)</script>'));
+    assert.ok(result.text.includes('Customer Support Associate'));
+    assert.ok(result.text.includes('127.0.0.1:3000/private'));
+});
+
+test('representative early-career resume is one page with extractable ATS text', async t => {
+    if (!existsSync(await puppeteer.executablePath())) return t.skip('Bundled Chromium is not installed');
+    const result = await readPdf(await renderResumePDF(fixture.earlyCareerResume()));
+    assert.equal(result.pageCount, 1);
+    for (const expected of [
+        'Jordan Example', 'Campus Placement Portal', 'Inventory Insights Dashboard',
+        'JavaScript', 'Foundations of Cloud Computing'
+    ]) assert.ok(result.text.includes(expected), `missing extractable text: ${expected}`);
+});
+
+test('substantive long resume uses two meaningful pages without clipping content', async t => {
+    if (!existsSync(await puppeteer.executablePath())) return t.skip('Bundled Chromium is not installed');
+    const result = await readPdf(await renderResumePDF(fixture.longResume()), [1, 2]);
+    assert.equal(result.pageCount, 2);
+    assert.ok(result.pageText[0].replace(/\s/g, '').length > 800);
+    assert.ok(result.pageText[1].replace(/\s/g, '').length > 500);
+    assert.ok(result.text.includes('Service Reliability Toolkit'));
+    assert.ok(result.text.includes('Secure Development Practices'));
+    assert.ok(result.text.includes('Technical Assistant'));
+    assert.ok(result.text.includes('Database Design'));
 });

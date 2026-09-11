@@ -29,8 +29,7 @@ function renderResumeHTML(input) {
         ? `<ul>${items.map(item => `<li>${e(item)}</li>`).join('')}</ul>` : '';
     const entries = (items, kind) => items.map(item => {
         const meta = metadata([item.organization, item.location, item.dates]);
-        const splitClass = item.bullets.length > 3 || item.bullets.join('').length > 850 ? ' entry--splittable' : '';
-        return `<article class="entry ${kind}-entry${splitClass}"><h3>${e(item.title)}</h3>` +
+        return `<article class="entry ${kind}-entry"><h3>${e(item.title)}</h3>` +
             `${meta ? `<p class="details">${meta}</p>` : ''}${bullets(item.bullets)}</article>`;
     }).join('');
     const projects = data.projects.map(project => {
@@ -75,7 +74,7 @@ p { margin: 0; }
 .summary { line-height: 1.42; }
 .entry { margin-top: 6pt; }
 .compact .entry { margin-top: 4pt; }
-.entry:not(.entry--splittable), .certifications-section, .skills-section { break-inside: avoid-page; page-break-inside: avoid; }
+.entry, .certifications-section, .skills-section { break-inside: avoid-page; page-break-inside: avoid; }
 h3 { margin: 0; color: #111827; font-size: 10.2pt; line-height: 1.25; break-after: avoid-page; page-break-after: avoid; }
 .details { margin-top: 1pt; color: #475569; font-size: 9pt; line-height: 1.3; }
 .technologies { margin-top: 1.5pt; color: #334155; font-size: 9.2pt; line-height: 1.3; }

@@ -14,6 +14,70 @@ function resume() {
         education: [{ title: 'Bachelor of Arts', organization: 'Example University', dates: '2023', location: '', bullets: [] }],
         projects: [], skillGroups: [{ category: 'Core Skills', skills: ['Communication', 'Troubleshooting', 'Documentation'] }], certifications: [] };
 }
+
+function earlyCareerResume() {
+    const project = (title, technologies, focus) => ({
+        title, organization: '', dates: '2024', technologies,
+        bullets: [
+            `Built ${focus} with ${technologies.slice(0, 2).join(' and ')} to support a clear end-to-end workflow.`,
+            `Implemented tested data handling and accessible user feedback for reliable everyday use.`
+        ]
+    });
+    return {
+        personalInfo: {
+            name: 'Jordan Example', headline: 'Software Engineering Graduate',
+            email: 'jordan@example.test', phone: '+91 90000 00000', location: 'Pune, India',
+            links: [
+                { label: 'GitHub', url: 'https://github.com/example-candidate' },
+                { label: 'Portfolio', url: 'https://portfolio.example.test' }
+            ]
+        },
+        summary: 'Software engineering graduate focused on building accessible web applications and dependable APIs. Applies JavaScript, React, Node.js, SQL, and practical testing through academic and independent projects, with a clear interest in product-focused engineering roles.',
+        experience: [],
+        projects: [
+            project('Campus Placement Portal', ['React', 'Node.js', 'Express', 'MongoDB'], 'a role-based placement portal'),
+            project('Inventory Insights Dashboard', ['Python', 'Pandas', 'PostgreSQL'], 'a searchable inventory reporting tool'),
+            project('Accessible Study Planner', ['JavaScript', 'HTML', 'CSS', 'Jest'], 'a keyboard-friendly study planning interface')
+        ],
+        education: [
+            { title: 'Bachelor of Technology in Computer Science', organization: 'Example Institute of Technology', location: 'Pune', dates: '2021-2025', bullets: [] },
+            { title: 'Higher Secondary Certificate', organization: 'Example Junior College', location: 'Pune', dates: '2021', bullets: [] },
+            { title: 'Secondary School Certificate', organization: 'Example School', location: 'Pune', dates: '2019', bullets: [] }
+        ],
+        skillGroups: [
+            { category: 'Languages', skills: ['JavaScript', 'TypeScript', 'Python', 'Java', 'SQL', 'C++'] },
+            { category: 'Frontend', skills: ['React', 'HTML', 'CSS', 'Sass', 'Redux', 'Accessibility'] },
+            { category: 'Backend', skills: ['Node.js', 'Express', 'REST APIs', 'JSON', 'Authentication', 'Web Security'] },
+            { category: 'Data', skills: ['MongoDB', 'PostgreSQL', 'MySQL', 'Pandas', 'NumPy', 'Data Modeling'] },
+            { category: 'Tools', skills: ['Git', 'GitHub', 'Docker', 'Postman', 'Jest', 'Linux'] }
+        ],
+        certifications: ['Foundations of Cloud Computing - Example Learning Platform']
+    };
+}
+
+function longResume() {
+    const data = earlyCareerResume();
+    data.personalInfo.headline = 'Software Engineer';
+    data.summary = 'Software engineer building secure web products, data services, and internal platforms. Experience includes API design, frontend delivery, automated testing, operational documentation, and cross-functional implementation across several substantive roles and projects.';
+    data.experience = Array.from({ length: 4 }, (_, index) => ({
+        title: ['Software Engineer', 'Associate Software Engineer', 'Engineering Intern', 'Technical Assistant'][index],
+        organization: `Synthetic Organization ${index + 1}`,
+        location: 'Pune', dates: `${2021 + index}-${2022 + index}`,
+        bullets: Array.from({ length: 4 }, (_, bullet) =>
+            `Delivered documented component ${bullet + 1} for a bounded product workflow using verified web technologies, automated checks, and maintainable interfaces.`)
+    }));
+    data.projects = [...data.projects, {
+        title: 'Service Reliability Toolkit', organization: '', dates: '2023',
+        technologies: ['Node.js', 'PostgreSQL', 'Docker'],
+        bullets: [
+            'Created health checks and structured diagnostics for local service operations.',
+            'Added bounded failure handling and repeatable verification for service maintainers.',
+            'Documented recovery steps and observable behavior for common operational faults.'
+        ]
+    }];
+    data.certifications.push('Secure Development Practices - Example Academy', 'Database Design - Example Academy');
+    return data;
+}
 const profile = { resume: 'Candidate with communication and customer support experience.', jobDescription: 'Customer support role requiring practical troubleshooting.', selfDescription: 'I enjoy helping customers solve problems.' };
 
 // Small, valid, deterministic PDF fixture with a correct xref, no external fixture dependency.
@@ -30,4 +94,4 @@ function pdf(text = 'Candidate resume: customer support and communication.') {
     content += `xref\n0 6\n0000000000 65535 f \n${offsets.slice(1).map(offset => `${String(offset).padStart(10, '0')} 00000 n \n`).join('')}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
     return { buffer: Buffer.from(content), mimetype: 'application/pdf', size: Buffer.byteLength(content) };
 }
-module.exports = { report, resume, profile, pdf };
+module.exports = { report, resume, earlyCareerResume, longResume, profile, pdf };

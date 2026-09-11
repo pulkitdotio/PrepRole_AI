@@ -313,6 +313,10 @@ function InterviewReport() {
 
   const score =
     Number(report.matchScore) || 0;
+  const technicalQuestions = report.technicalQuestions || [];
+  const behavioralQuestions = report.behavioralQuestions || [];
+  const skillGaps = report.skillGaps || [];
+  const preparationPlan = report.preparationPlan || [];
 
   return (
     <div className="report-page">
@@ -616,11 +620,7 @@ function InterviewReport() {
             </div>
 
             <div className="question-list">
-              {(
-                report
-                  .technicalQuestions ||
-                []
-              ).map(
+              {technicalQuestions.map(
                 (question, index) => (
                   <QuestionCard
                     key={`${index}-${question.question}`}
@@ -629,6 +629,7 @@ function InterviewReport() {
                   />
                 )
               )}
+              {technicalQuestions.length === 0 && <p className="report-empty-state">No technical questions were included in this report.</p>}
             </div>
 
           </section>
@@ -658,11 +659,7 @@ function InterviewReport() {
             </div>
 
             <div className="question-list">
-              {(
-                report
-                  .behavioralQuestions ||
-                []
-              ).map(
+              {behavioralQuestions.map(
                 (question, index) => (
                   <QuestionCard
                     key={`${index}-${question.question}`}
@@ -671,6 +668,7 @@ function InterviewReport() {
                   />
                 )
               )}
+              {behavioralQuestions.length === 0 && <p className="report-empty-state">No behavioral questions were included in this report.</p>}
             </div>
 
           </section>
@@ -699,10 +697,7 @@ function InterviewReport() {
             </div>
 
             <div className="skill-gap-list">
-              {(
-                report.skillGaps ||
-                []
-              ).map(
+              {skillGaps.map(
                 (gap, index) => (
                   <article
                     className="skill-gap-card"
@@ -735,6 +730,7 @@ function InterviewReport() {
                   </article>
                 )
               )}
+              {skillGaps.length === 0 && <p className="report-empty-state">No skill gaps were included in this report.</p>}
             </div>
 
           </section>
@@ -763,11 +759,7 @@ function InterviewReport() {
             </div>
 
             <div className="preparation-timeline">
-              {(
-                report
-                  .preparationPlan ||
-                []
-              ).map(
+              {preparationPlan.map(
                 (day, index) => (
                   <article
                     className="plan-card"
@@ -814,6 +806,7 @@ function InterviewReport() {
                   </article>
                 )
               )}
+              {preparationPlan.length === 0 && <p className="report-empty-state">No preparation plan was included in this report.</p>}
             </div>
 
           </section>

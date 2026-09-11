@@ -11,6 +11,7 @@ import {
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -50,6 +51,7 @@ function InterviewHistory() {
   const [pagination, setPagination] = useState(emptyPagination);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const deletingRef = useRef(false);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
@@ -107,15 +109,17 @@ function InterviewHistory() {
   };
 
   const confirmDelete = async () => {
-    if (!pendingDelete?._id) return;
+    if (!pendingDelete?._id || deletingRef.current) return;
+    const interviewId = pendingDelete._id;
     try {
+      deletingRef.current = true;
       setDeleting(true);
       setError('');
-      await deleteInterviewReport(pendingDelete._id);
+      await deleteInterviewReport(interviewId);
       if (interviews.length === 1 && page > 1) {
         goToPage(page - 1);
       } else {
-        setInterviews(current => current.filter(item => item._id !== pendingDelete._id));
+        setInterviews(current => current.filter(item => item._id !== interviewId));
         setPagination(current => {
           const totalItems = Math.max(0, current.totalItems - 1);
           const totalPages = Math.ceil(totalItems / current.limit);
@@ -132,6 +136,7 @@ function InterviewHistory() {
     } catch (requestError) {
       setError(getApiErrorMessage(requestError, 'Unable to delete the interview report.'));
     } finally {
+      deletingRef.current = false;
       setDeleting(false);
     }
   };

@@ -41,7 +41,7 @@ const Input = forwardRef(function Input(
       />
 
       {error && (
-        <span className="field-error" id={`${inputId}-error`}>
+        <span className="field-error" id={`${inputId}-error`} role="alert">
           {error}
         </span>
       )}

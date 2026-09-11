@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import ConfirmDialog from '../../../components/common/ConfirmDialog';
-import ErrorMessage from '../../../components/common/ErrorMessage';
 import { useAuth } from '../../../context/useAuth';
+import { getApiErrorMessage } from '../../../services/apiError';
 
 function AccountSettings() {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ function AccountSettings() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const deletingRef = useRef(false);
 
   const close = () => {
     if (loading) return;
@@ -23,18 +24,21 @@ function AccountSettings() {
   };
 
   const confirm = async () => {
+    if (deletingRef.current) return;
     if (password.length < 8) {
       setError('Enter your current password to continue.');
       return;
     }
     try {
+      deletingRef.current = true;
       setLoading(true);
       setError('');
       await deleteAccount(password);
       navigate('/', { replace: true });
     } catch (requestError) {
-      setError(requestError?.response?.data?.message || 'Unable to delete your account. Please try again.');
+      setError(getApiErrorMessage(requestError, 'Unable to delete your account. Please try again.'));
     } finally {
+      deletingRef.current = false;
       setLoading(false);
     }
   };
@@ -80,9 +84,9 @@ function AccountSettings() {
             value={password}
             onChange={event => setPassword(event.target.value)}
             disabled={loading}
+            error={error}
             required
           />
-          <ErrorMessage message={error} />
         </div>
       </ConfirmDialog>
     </div>

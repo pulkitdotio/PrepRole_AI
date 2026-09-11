@@ -65,7 +65,7 @@ const Textarea = forwardRef(
 
         <div className="textarea-footer">
           {error && (
-            <span className="field-error" id={`${textareaId}-error`}>
+            <span className="field-error" id={`${textareaId}-error`} role="alert">
               {error}
             </span>
           )}

@@ -7,6 +7,7 @@ import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import { useAuth } from '../../../context/useAuth';
+import { getApiErrorMessage } from '../../../services/apiError';
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -55,10 +56,7 @@ function LoginForm() {
         replace: true,
       });
     } catch (error) {
-      setError(
-        error?.response?.data?.message ||
-          'Unable to sign in. Please check your credentials.'
-      );
+      setError(getApiErrorMessage(error, 'Unable to sign in. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -117,20 +115,6 @@ function LoginForm() {
           ) : (
             <Eye size={17} />
           )}
-        </button>
-      </div>
-
-      <div className="auth-options">
-        <label className="remember-option">
-          <input type="checkbox" />
-          <span>Remember me</span>
-        </label>
-
-        <button
-          type="button"
-          className="text-button"
-        >
-          Forgot password?
         </button>
       </div>
 

@@ -12,6 +12,8 @@ import {
 } from 'react-router';
 
 import {
+  useEffect,
+  useRef,
   useState,
 } from 'react';
 
@@ -25,6 +27,8 @@ import ErrorMessage from '../../../components/common/ErrorMessage';
 import {
   generateInterviewReport,
 } from '../interview.api';
+import { getApiErrorMessage } from '../../../services/apiError';
+import { generationMessages, nextGenerationMessage } from '../generationStatus';
 
 const initialValues = {
   jobTitle: '',
@@ -53,14 +57,24 @@ function CreateInterview() {
 
   const [loading, setLoading] =
     useState(false);
+  const loadingRef = useRef(false);
+  const [generationMessageIndex, setGenerationMessageIndex] = useState(0);
+
+  useEffect(() => {
+    if (!loading) return undefined;
+    const timer = window.setInterval(() => {
+      setGenerationMessageIndex(nextGenerationMessage);
+    }, 3500);
+    return () => window.clearInterval(timer);
+  }, [loading]);
 
   const validateStepOne = () => {
     const nextErrors = {};
 
-    if (values.jobTitle.length > 160 || values.companyName.length > 160 ||
-        values.jobDescription.length > 5000 || values.selfDescription.length > 2000) {
-      nextErrors.jobDescription = 'Please keep the job description within 5,000 characters, your introduction within 2,000, and titles within 160.';
-    }
+    if (values.jobTitle.length > 160) nextErrors.jobTitle = 'Job title must be 160 characters or fewer.';
+    if (values.companyName.length > 160) nextErrors.companyName = 'Company name must be 160 characters or fewer.';
+    if (values.jobDescription.length > 5000) nextErrors.jobDescription = 'Job description must be 5,000 characters or fewer.';
+    if (values.selfDescription.length > 2000) nextErrors.selfDescription = 'Self-description must be 2,000 characters or fewer.';
 
     if (
       !values.jobTitle.trim()
@@ -151,6 +165,7 @@ function CreateInterview() {
   };
 
   const handleGenerate = async () => {
+    if (loadingRef.current) return;
     if (!validateStepOne()) {
       setStep(1);
       return;
@@ -162,7 +177,9 @@ function CreateInterview() {
     }
 
     try {
+      loadingRef.current = true;
       setLoading(true);
+      setGenerationMessageIndex(0);
       setSubmitError('');
 
       /*
@@ -215,14 +232,9 @@ function CreateInterview() {
         }
       );
     } catch (error) {
-      const message =
-        error?.response?.data
-          ?.message ||
-        error?.message ||
-        'Unable to generate the interview report. Please try again.';
-
-      setSubmitError(message);
+      setSubmitError(getApiErrorMessage(error, 'Unable to generate your interview report. Please try again.'));
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
   };
@@ -235,6 +247,8 @@ function CreateInterview() {
         <Link
           to="/dashboard"
           className="back-link"
+          aria-disabled={loading}
+          onClick={event => { if (loading) event.preventDefault(); }}
         >
           <ArrowLeft size={15} />
           Back to Dashboard
@@ -275,6 +289,16 @@ function CreateInterview() {
             <ErrorMessage
               message={submitError}
             />
+          </div>
+        )}
+
+        {loading && (
+          <div className="generation-status" role="status" aria-live="polite">
+            <LoaderCircle size={18} className="spin" aria-hidden="true" />
+            <div>
+              <strong>{generationMessages[generationMessageIndex]}</strong>
+              <span>This can take a moment. Keep this page open while PrepAI works.</span>
+            </div>
           </div>
         )}
 
@@ -438,6 +462,7 @@ function CreateInterview() {
               <Button
                 variant="primary"
                 onClick={handleNext}
+                disabled={loading}
               >
                 Next Step
                 <ArrowRight size={15} />
@@ -458,7 +483,7 @@ function CreateInterview() {
                       size={16}
                       className="spin"
                     />
-                    Generating...
+                    Generating report…
                   </>
                 ) : (
                   <>

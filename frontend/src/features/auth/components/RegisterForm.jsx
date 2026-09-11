@@ -7,6 +7,7 @@ import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import { useAuth } from '../../../context/useAuth';
+import { getApiErrorMessage } from '../../../services/apiError';
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -91,10 +92,7 @@ function RegisterForm() {
         replace: true,
       });
     } catch (error) {
-      setError(
-        error?.response?.data?.message ||
-          'Unable to create your account.'
-      );
+      setError(getApiErrorMessage(error, 'Unable to create your account.'));
     } finally {
       setLoading(false);
     }

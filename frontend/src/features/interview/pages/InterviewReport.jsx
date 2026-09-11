@@ -16,6 +16,8 @@ import {
 
 import {
   useEffect,
+  useId,
+  useRef,
   useState,
 } from 'react';
 
@@ -118,6 +120,7 @@ function QuestionCard({
   question,
   index,
 }) {
+  const contentId = useId();
   const [
     open,
     setOpen,
@@ -136,6 +139,7 @@ function QuestionCard({
           )
         }
         aria-expanded={open}
+        aria-controls={contentId}
       >
         <div className="question-number">
           {String(index + 1).padStart(
@@ -156,6 +160,7 @@ function QuestionCard({
 
         <ChevronDown
           size={18}
+          aria-hidden="true"
           className={
             open
               ? 'question-chevron question-chevron--open'
@@ -165,7 +170,7 @@ function QuestionCard({
       </button>
 
       {open && (
-        <div className="question-card__body">
+        <div className="question-card__body" id={contentId}>
 
           <div className="question-detail">
             <div className="question-detail__icon">
@@ -223,6 +228,20 @@ function InterviewReport() {
   const [activeTab, setActiveTab] =
     useState('overview');
   const [reloadKey, setReloadKey] = useState(0);
+  const tabRefs = useRef([]);
+
+  const handleTabKeyDown = (event, index) => {
+    let nextIndex;
+    if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+    else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = tabs.length - 1;
+    else return;
+
+    event.preventDefault();
+    setActiveTab(tabs[nextIndex].id);
+    tabRefs.current[nextIndex]?.focus();
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -346,11 +365,17 @@ function InterviewReport() {
       </header>
 
       {/* Tabs */}
-      <div className="report-tabs">
-        {tabs.map((tab) => (
+      <div className="report-tabs" role="tablist" aria-label="Interview report sections">
+        {tabs.map((tab, index) => (
           <button
             type="button"
             key={tab.id}
+            ref={element => { tabRefs.current[index] = element; }}
+            id={`report-tab-${tab.id}`}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls="report-tabpanel"
+            tabIndex={activeTab === tab.id ? 0 : -1}
             className={
               activeTab === tab.id
                 ? 'report-tab report-tab--active'
@@ -359,6 +384,7 @@ function InterviewReport() {
             onClick={() =>
               setActiveTab(tab.id)
             }
+            onKeyDown={event => handleTabKeyDown(event, index)}
           >
             {tab.label}
           </button>
@@ -366,7 +392,13 @@ function InterviewReport() {
       </div>
 
       {/* Content */}
-      <div className="report-content">
+      <div
+        className="report-content"
+        id="report-tabpanel"
+        role="tabpanel"
+        tabIndex={0}
+        aria-labelledby={`report-tab-${activeTab}`}
+      >
 
         {/* Overview */}
         {activeTab ===

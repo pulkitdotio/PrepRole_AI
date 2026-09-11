@@ -10,7 +10,7 @@ import {
 
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Logo from "../components/common/Logo";
 import { useAuth } from "../context/useAuth";
@@ -22,6 +22,8 @@ function DashboardLayout() {
   const { logout } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const menuButtonRef = useRef(null);
+  const sidebarRef = useRef(null);
 
   const isInterviewHistoryContext =
     location.pathname === "/interviews" ||
@@ -33,6 +35,11 @@ function DashboardLayout() {
       return undefined;
     }
 
+    const previousOverflow = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
+    document.body.style.overflow = "hidden";
+    sidebarRef.current?.querySelector("a, button")?.focus();
+
     const closeOnEscape = (event) => {
       if (event.key === "Escape") {
         setSidebarOpen(false);
@@ -43,6 +50,8 @@ function DashboardLayout() {
 
     return () => {
       window.removeEventListener("keydown", closeOnEscape);
+      document.body.style.overflow = previousOverflow;
+      menuButton?.focus();
     };
   }, [sidebarOpen]);
 
@@ -73,17 +82,22 @@ function DashboardLayout() {
     <div className="app-shell">
       {/* Mobile menu button */}
       <button
+        ref={menuButtonRef}
         type="button"
         className="mobile-menu-button"
         onClick={() => setSidebarOpen((current) => !current)}
         aria-label={sidebarOpen ? "Close navigation" : "Open navigation"}
         aria-expanded={sidebarOpen}
+        aria-controls="workspace-navigation"
       >
         {sidebarOpen ? <X size={21} /> : <Menu size={21} />}
       </button>
 
       {/* Sidebar */}
       <aside
+        ref={sidebarRef}
+        id="workspace-navigation"
+        aria-label="Workspace navigation"
         className={["sidebar", sidebarOpen ? "sidebar--open" : ""]
           .filter(Boolean)
           .join(" ")}

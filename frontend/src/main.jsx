@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router';
 
 import { router } from './app.routes';
 import { AuthProvider } from './context/AuthContext';
+import AppErrorBoundary from './components/common/AppErrorBoundary';
 
 import './styles/global.scss';
 
@@ -11,10 +12,12 @@ createRoot(
   document.getElementById('root')
 ).render(
   <StrictMode>
-    <AuthProvider>
-      <RouterProvider
-        router={router}
-      />
-    </AuthProvider>
+    <AppErrorBoundary>
+      <AuthProvider>
+        <RouterProvider
+          router={router}
+        />
+      </AuthProvider>
+    </AppErrorBoundary>
   </StrictMode>
 );

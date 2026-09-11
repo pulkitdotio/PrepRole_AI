@@ -161,6 +161,15 @@ body {
 .question-card__header { min-height: 68px; }
 .question-card__question h3, .skill-gap-card__main h3, .plan-content h3 { font-size: 13px; }
 .question-detail p, .skill-gap-card__main p, .plan-content li { font-size: 12px; }
+.question-card,
+.question-detail,
+.review-item,
+.skill-gap-card,
+.plan-content,
+.resume-info-card,
+.report-content { overflow-wrap: anywhere; }
+.report-tab { flex: 0 0 auto; }
+.not-found__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 
 .resume-page__header { padding: 26px 32px 22px; }
 .resume-layout { max-width: 1180px; grid-template-columns: 280px minmax(0, 1fr); padding: 0 32px; }
@@ -185,6 +194,10 @@ body {
   .resume-page__header, .report-header, .report-tabs, .resume-layout { padding-left: 16px; padding-right: 16px; }
   .page-error--with-action,
   .dashboard-data-error { align-items: stretch; flex-direction: column; }
+  .interview-actions { flex-wrap: wrap; }
+  .interview-actions .button { min-width: min(100%, 140px); }
+  .resume-file { align-items: flex-start; flex-wrap: wrap; }
+  .resume-file__actions { width: 100%; justify-content: flex-end; }
 }
 
 @media (prefers-reduced-motion: reduce) {

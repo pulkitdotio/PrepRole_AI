@@ -8,8 +8,10 @@ export function installSessionInterceptor(client, { getVersion, onUnauthorized }
     response => response,
     error => {
       const config = error.config;
-      const isProtected = /^\/interview(?:\/|$)/.test(config?.url || '');
-      if (error.response?.status === 401 && isProtected &&
+      const authenticationExpired =
+        error.response?.status === 401 &&
+        error.response?.data?.error?.code === 'AUTHENTICATION_REQUIRED';
+      if (authenticationExpired &&
           config.sessionVersion === getVersion()) {
         onUnauthorized();
       }

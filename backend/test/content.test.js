@@ -137,7 +137,7 @@ test('model markup is literal text and cannot create elements, attributes, URLs 
 });
 
 test('AI retry budget includes invalid outputs and temporary API failures; no raw feedback', async t => {
-    t.mock.method(console, 'warn', () => {}); t.mock.method(console, 'info', () => {});
+    t.mock.method(console, 'warn', () => {});
     let calls = 0;
     const requests = [];
     const client = { models: { generateContent: async request => {

@@ -15,7 +15,10 @@ function setup(adapter) {
 }
 
 test('protected 401 clears session and preserves rejection for caller', async () => {
-  const auth = setup(config => Promise.reject({ config, response: { status: 401 } }));
+  const auth = setup(config => Promise.reject({
+    config,
+    response: { status: 401, data: { error: { code: 'AUTHENTICATION_REQUIRED' } } },
+  }));
   await assert.rejects(auth.client.get('/interview/'));
   assert.equal(auth.count(), 1);
   auth.dispose();
@@ -23,15 +26,31 @@ test('protected 401 clears session and preserves rejection for caller', async ()
   assert.equal(auth.count(), 1);
 });
 
-test('login/register/get-me/logout errors and non-auth failures do not invoke expiration', async () => {
+test('expected credential errors and non-auth failures do not invoke expiration', async () => {
   let status = 401;
-  const auth = setup(config => Promise.reject({ config, response: { status } }));
+  let code = 'INVALID_CREDENTIALS';
+  const auth = setup(config => Promise.reject({
+    config,
+    response: { status, data: { error: { code } } },
+  }));
   for (const path of ['/auth/login', '/auth/register', '/auth/get-me', '/auth/logout', '/public']) {
     await assert.rejects(auth.client.get(path));
   }
+  await assert.rejects(auth.client.delete('/auth/account'));
   status = 503;
+  code = 'AUTHENTICATION_UNAVAILABLE';
   await assert.rejects(auth.client.get('/interview/'));
   assert.equal(auth.count(), 0);
+  auth.dispose();
+});
+
+test('authentication-required response clears session for every protected endpoint', async () => {
+  const auth = setup(config => Promise.reject({
+    config,
+    response: { status: 401, data: { error: { code: 'AUTHENTICATION_REQUIRED' } } },
+  }));
+  await assert.rejects(auth.client.delete('/auth/account'));
+  assert.equal(auth.count(), 1);
   auth.dispose();
 });
 
@@ -40,7 +59,10 @@ test('a late 401 from a prior session cannot log out a newer session', async () 
   let started;
   const ready = new Promise(resolve => { started = resolve; });
   const auth = setup(config => new Promise((resolve, reject) => {
-    rejectRequest = () => reject({ config, response: { status: 401 } });
+    rejectRequest = () => reject({
+      config,
+      response: { status: 401, data: { error: { code: 'AUTHENTICATION_REQUIRED' } } },
+    });
     started();
   }));
   const request = auth.client.get('/interview/report/123');

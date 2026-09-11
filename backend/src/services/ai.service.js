@@ -64,7 +64,6 @@ async function generateStructured(operation, input, {
         try {
             if (now() >= deadline) break;
             const result = parseResponse(response?.text, schema);
-            console.info('AI output validated', { operation, attempt });
             return result;
         } catch {
             invalidOutput = true;

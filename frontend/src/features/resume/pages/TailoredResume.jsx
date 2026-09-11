@@ -264,14 +264,13 @@ function TailoredResume() {
 
           {!pdfUrl &&
             !generating && (
-              <button
-                type="button"
-                className="button button--primary resume-generate-button"
+              <Button
+                className="resume-generate-button"
                 onClick={generate}
+                icon={<Sparkles size={16} aria-hidden="true" />}
               >
-                <Sparkles size={16} />
                 Generate Tailored Resume
-              </button>
+              </Button>
             )}
 
         </div>

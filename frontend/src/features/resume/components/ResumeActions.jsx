@@ -2,6 +2,7 @@ import {
   Download,
   RefreshCw,
 } from 'lucide-react';
+import Button from '../../../components/ui/Button';
 
 function ResumeActions({
   pdfUrl,
@@ -33,37 +34,25 @@ function ResumeActions({
   return (
     <div className="resume-actions">
 
-      <button
-        type="button"
-        className="button button--secondary"
+      <Button
+        variant="secondary"
         onClick={onGenerate}
-        disabled={loading}
+        loading={loading}
+        loadingLabel="Generating resume…"
+        icon={<RefreshCw size={15} aria-hidden="true" />}
       >
-        <RefreshCw
-          size={15}
-          className={
-            loading
-              ? 'spin'
-              : ''
-          }
-        />
+        Edit & Regenerate
+      </Button>
 
-        {loading
-          ? 'Generating...'
-          : 'Edit & Regenerate'}
-      </button>
-
-      <button
-        type="button"
-        className="button button--primary"
+      <Button
         onClick={handleDownload}
         disabled={
           loading || !pdfUrl
         }
+        icon={<Download size={15} aria-hidden="true" />}
       >
-        <Download size={15} />
         Download PDF
-      </button>
+      </Button>
 
     </div>
   );

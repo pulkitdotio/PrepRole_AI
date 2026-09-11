@@ -37,7 +37,7 @@ This document records the local code audit completed after Phases 1–7. It is a
 
 ## Automated verification
 
-- Backend: `npm test` — 64 passed, 0 failed, including real bundled-Chromium PDF rendering and security regressions.
+- Backend: `npm test` — 65 passed, 0 failed, including provider-limit handling, real bundled-Chromium PDF rendering, and security regressions.
 - Frontend: `npm test` — 13 passed, 0 failed; `npm run lint` and `npm run build` passed.
 - Dependencies: backend and frontend `npm audit --audit-level=low` each reported 0 vulnerabilities at audit time.
 - Local startup: the backend started against the configured local environment and returned 200 from `/health`; Vite started and served its root document. Both smoke processes were stopped after verification. One end-to-end Gemini/PDF check used synthetic fixture data only.

@@ -85,6 +85,13 @@ test('dashboard stats aggregate only the authenticated owner and handle empty da
         totalInterviews: 0, completedInterviews: 0,
         averageMatchScore: null, bestMatchScore: null
     });
+    result = [{ totalInterviews: 1, averageMatchScore: 73, bestMatchScore: 73 }];
+    const single = response();
+    await controller.getInterviewStats({ user: { id: userId } }, single);
+    assert.deepEqual(single.body.stats, {
+        totalInterviews: 1, completedInterviews: 1,
+        averageMatchScore: 73, bestMatchScore: 73
+    });
     result = [{ totalInterviews: 3, averageMatchScore: 81.6, bestMatchScore: 94 }];
     const populated = response();
     await controller.getInterviewStats({ user: { id: userId } }, populated);
@@ -108,4 +115,21 @@ test('report detail projection omits retained source profile fields', async t =>
         assert.equal(selected.includes(field), false);
         assert.equal(res.body.interviewReport[field], undefined);
     }
+});
+
+test('report deletion is owner-scoped and repeated/foreign deletion returns not found', async t => {
+    let exists = true;
+    t.mock.method(Model, 'findOneAndDelete', async filter => {
+        assert.deepEqual(filter, { _id: reportId, userId });
+        if (!exists) return null;
+        exists = false;
+        return { _id: reportId };
+    });
+    const removed = response();
+    await controller.deleteInterviewReport({ params: { interviewId: reportId }, user: { id: userId } }, removed);
+    assert.equal(removed.statusCode, 200);
+    await assert.rejects(
+        controller.deleteInterviewReport({ params: { interviewId: reportId }, user: { id: userId } }, response()),
+        error => error.statusCode === 404 && error.code === 'REPORT_NOT_FOUND'
+    );
 });

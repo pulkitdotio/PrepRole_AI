@@ -20,6 +20,7 @@ import InterviewHistory from './features/interview/pages/InterviewHistory';
 import InterviewReport from './features/interview/pages/InterviewReport';
 
 import TailoredResume from './features/resume/pages/TailoredResume';
+import AccountSettings from './features/auth/pages/AccountSettings';
 
 export const router =
   createBrowserRouter([
@@ -89,6 +90,10 @@ export const router =
                   element: (
                     <TailoredResume />
                   ),
+                },
+                {
+                  path: 'settings',
+                  element: <AccountSettings />,
                 },
               ],
             },

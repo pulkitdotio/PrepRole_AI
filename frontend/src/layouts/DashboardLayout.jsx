@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Settings,
   X,
 } from "lucide-react";
 
@@ -135,6 +136,16 @@ function DashboardLayout() {
           >
             <BarChart3 size={17} />
             <span>My Interviews</span>
+          </NavLink>
+
+          <NavLink
+            to="/settings"
+            end
+            onClick={closeSidebar}
+            className={getNavClass}
+          >
+            <Settings size={17} />
+            <span>Settings</span>
           </NavLink>
 
         </nav>

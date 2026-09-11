@@ -135,6 +135,24 @@ test('registration hashes at cost 12 without trimming password and returns sanit
     assert.equal(verifyToken(res.cookies[0][1]).expiresAt.toISOString(), res.body.sessionExpiresAt);
 });
 
+test('registration insert races translate duplicate indexes into safe field-specific conflicts', async t => {
+    t.mock.method(users, 'findOne', async () => null);
+    const fields = ['email', 'username'];
+    t.mock.method(users, 'create', async () => {
+        const field = fields.shift();
+        const error = new Error('E11000 users collection internal index detail');
+        error.code = 11000;
+        error.keyPattern = { [field]: 1 };
+        throw error;
+    });
+    for (const [, code] of [['email', 'EMAIL_EXISTS'], ['username', 'USERNAME_EXISTS']]) {
+        await assert.rejects(
+            controller.registerUser({ body: { username: 'Candidate', email: 'candidate@example.com', password: 'password' } }, response()),
+            error => error.statusCode === 409 && error.code === code && !error.message.includes('E11000')
+        );
+    }
+});
+
 test('login explicitly selects password; wrong password and unknown user have the same response', async t => {
     const hash = await bcrypt.hash(' password ', 12);
     let foundUser = { ...user, password: hash };
@@ -168,6 +186,7 @@ test('logout stores only jti/expiry, is idempotent, and blocks subsequent token 
         records.set(filter.jti, update.$setOnInsert);
     });
     t.mock.method(revoked, 'exists', async filter => records.has(filter.jti));
+    t.mock.method(users, 'exists', async () => true);
     const req = { cookies: { token } };
     let passed = false;
     await authMiddleware(req, response(), () => { passed = true; });
@@ -198,6 +217,7 @@ test('missing, malformed and expired logout cookies succeed without a database w
 
 test('revocation database failures fail closed and logout still clears cookie', async t => {
     t.mock.method(revoked, 'exists', async () => { throw new Error('database offline'); });
+    t.mock.method(users, 'exists', async () => true);
     t.mock.method(revoked, 'updateOne', async () => { throw new Error('database offline'); });
     const req = { cookies: { token: createToken(userId) } };
     let middlewareError;
@@ -206,6 +226,77 @@ test('revocation database failures fail closed and logout still clears cookie', 
     const logout = response();
     await assert.rejects(controller.logoutUser(req, logout), error => error.statusCode === 503);
     assert.equal(logout.cleared.length, 1);
+});
+
+test('account deletion verifies password, removes only owned reports, revokes session and clears cookie', async t => {
+    const password = ' deletion password ';
+    const passwordHash = await bcrypt.hash(password, 12);
+    const session = verifyToken(createToken(userId));
+    const calls = [];
+    t.mock.method(users, 'findById', id => ({ select: async selection => {
+        assert.equal(id, userId);
+        assert.equal(selection, '+password');
+        return { ...user, password: passwordHash };
+    } }));
+    t.mock.method(require('../src/models/interviewReport.model'), 'deleteMany', async filter => {
+        assert.deepEqual(filter, { userId });
+        calls.push('reports');
+        return { deletedCount: 2 };
+    });
+    t.mock.method(revoked, 'updateOne', async (filter, update, options) => {
+        assert.deepEqual(filter, { jti: session.sessionId });
+        assert.deepEqual(update.$setOnInsert, { jti: session.sessionId, expiresAt: session.expiresAt });
+        assert.equal(options.upsert, true);
+        calls.push('revocation');
+    });
+    t.mock.method(users, 'deleteOne', async filter => {
+        assert.deepEqual(filter, { _id: userId });
+        calls.push('user');
+        return { deletedCount: 1 };
+    });
+    const res = response();
+    await controller.deleteAccount({ user: session, body: { password } }, res);
+    assert.deepEqual(calls, ['reports', 'revocation', 'user']);
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.cleared.length, 1);
+});
+
+test('wrong account-deletion password preserves account and reports', async t => {
+    const hash = await bcrypt.hash('correct password', 12);
+    t.mock.method(users, 'findById', () => ({ select: async () => ({ ...user, password: hash }) }));
+    t.mock.method(users, 'deleteOne', () => assert.fail('user deleted'));
+    t.mock.method(require('../src/models/interviewReport.model'), 'deleteMany', () => assert.fail('reports deleted'));
+    await assert.rejects(
+        controller.deleteAccount({ user: verifyToken(createToken(userId)), body: { password: 'wrong password' } }, response()),
+        error => error.statusCode === 401 && error.code === 'INVALID_CREDENTIALS'
+    );
+});
+
+test('account-deletion partial failures keep the account and return a safe retryable error', async t => {
+    const hash = await bcrypt.hash('correct password', 12);
+    t.mock.method(users, 'findById', () => ({ select: async () => ({ ...user, password: hash }) }));
+    t.mock.method(require('../src/models/interviewReport.model'), 'deleteMany', async () => { throw new Error('Mongo internal detail'); });
+    t.mock.method(users, 'deleteOne', () => assert.fail('user deleted after report failure'));
+    await assert.rejects(
+        controller.deleteAccount({ user: verifyToken(createToken(userId)), body: { password: 'correct password' } }, response()),
+        error => error.statusCode === 503 && error.code === 'ACCOUNT_DELETION_FAILED' && !error.message.includes('Mongo')
+    );
+});
+
+test('tokens for deleted users are rejected before protected actions', async t => {
+    t.mock.method(revoked, 'exists', async () => false);
+    t.mock.method(users, 'exists', async filter => {
+        assert.deepEqual(filter, { _id: userId });
+        return null;
+    });
+    let denied;
+    await authMiddleware(
+        { cookies: { token: createToken(userId) } },
+        response(),
+        error => { denied = error; }
+    );
+    assert.equal(denied.statusCode, 401);
+    assert.equal(denied.code, 'AUTHENTICATION_REQUIRED');
 });
 
 test('get-me returns no password and clears a stale cookie if the user was deleted', async t => {
@@ -229,4 +320,7 @@ test('only POST logout is registered and get-me remains protected', () => {
     assert.deepEqual(Object.keys(logout[0].route.methods), ['post']);
     const getMe = router.stack.find(layer => layer.route?.path === '/get-me');
     assert.equal(getMe.route.stack[0].handle, authMiddleware);
+    const account = router.stack.find(layer => layer.route?.path === '/account');
+    assert.deepEqual(Object.keys(account.route.methods), ['delete']);
+    assert.equal(account.route.stack[0].handle, authMiddleware);
 });

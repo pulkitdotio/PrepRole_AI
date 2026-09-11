@@ -2,6 +2,7 @@ const revokedTokenModel = require('../models/revokedToken.model');
 const { getAuthConfig, getClearCookieOptions } = require('../config/auth');
 const { verifyToken, isInvalidToken } = require('../utils/token');
 const AppError = require('../utils/appError');
+const userModel = require('../models/user.model');
 
 async function authUser(req, res, next) {
     const unauthorized = () => {
@@ -16,9 +17,12 @@ async function authUser(req, res, next) {
         }
 
         const session = verifyToken(token);
-        const isBlacklisted = await revokedTokenModel.exists({ jti: session.sessionId });
+        const [isBlacklisted, userExists] = await Promise.all([
+            revokedTokenModel.exists({ jti: session.sessionId }),
+            userModel.exists({ _id: session.id })
+        ]);
 
-        if (isBlacklisted) {
+        if (isBlacklisted || !userExists) {
             return unauthorized();
         }
 

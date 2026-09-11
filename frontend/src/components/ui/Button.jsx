@@ -9,10 +9,12 @@ function Button({
   disabled = false,
   icon,
   className = '',
+  ref,
   ...props
 }) {
   return (
     <button
+      ref={ref}
       type={type}
       className={[
         'button',

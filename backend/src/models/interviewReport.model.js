@@ -23,7 +23,7 @@ const interviewReportSchema = new mongoose.Schema({
     behavioralQuestions: boundedArray(questionSchema, L.questions),
     skillGaps: boundedArray(skillGapSchema, L.gaps),
     preparationPlan: boundedArray(preparationPlanSchema, L.days),
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true, index: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
     title: text(L.titleChars)
 }, { timestamps: true, strict: 'throw' });
 interviewReportSchema.index({ userId: 1, createdAt: -1 });

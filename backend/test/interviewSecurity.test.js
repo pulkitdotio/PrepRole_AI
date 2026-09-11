@@ -39,6 +39,9 @@ test('generation uses authenticated ownership and rejects model mass assignment'
     const res = response();
     await controller.generateInterviewReport(req, res);
     assert.equal(res.statusCode, 201);
+    for (const field of ['resume', 'jobDescription', 'selfDescription']) {
+        assert.equal(res.body.interviewReport[field], undefined);
+    }
     generated = { ...fixture.report(), userId: userB };
     await assert.rejects(controller.generateInterviewReport(req, response()));
     assert.equal(writes, 1);

@@ -58,6 +58,36 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.confirm-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(3, 7, 18, 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.confirm-dialog {
+  width: min(440px, 100%);
+  padding: 24px;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background: $surface;
+  box-shadow: $shadow-card;
+
+  h2 { margin-bottom: 10px; font-size: 20px; }
+  p { color: $text-muted; line-height: 1.6; }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+  }
+}
+
 ::selection {
   background: rgba(
     $purple-light,

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getCurrentUser, loginUser, logoutUser, registerUser } from '../features/auth/auth.api';
+import { deleteCurrentAccount, getCurrentUser, loginUser, logoutUser, registerUser } from '../features/auth/auth.api';
 import { AuthContext } from './auth-context';
 import api from '../services/api';
 import { installSessionInterceptor } from '../services/sessionInterceptor';
@@ -111,10 +111,18 @@ export function AuthProvider({ children }) {
     }
   }, [clearSession]);
 
+  const deleteAccount = useCallback(async password => {
+    const operation = ++authOperation.current;
+    sessionVersion.current += 1;
+    const response = await deleteCurrentAccount(password);
+    if (operation === authOperation.current) clearSession();
+    return response;
+  }, [clearSession]);
+
   const value = useMemo(() => ({
     user, loading, isAuthenticated: Boolean(user), login, register, logout,
-    refreshUser: loadUser,
-  }), [user, loading, login, register, logout, loadUser]);
+    refreshUser: loadUser, deleteAccount,
+  }), [user, loading, login, register, logout, loadUser, deleteAccount]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -3,7 +3,7 @@ const express = require('express');
 const authController = require('../controllers/auth.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const { validate } = require('../middlewares/validate.middleware');
-const { registerBodySchema, loginBodySchema } = require('../schemas/auth.schemas');
+const { registerBodySchema, loginBodySchema, deleteAccountBodySchema } = require('../schemas/auth.schemas');
 const { loginLimiter, registerLimiter } = require('../middlewares/rateLimit.middleware');
 
 const authRouter = express.Router();
@@ -31,6 +31,13 @@ authRouter.get(
     '/get-me',
     authMiddleware,
     authController.getMeController
+);
+
+authRouter.delete(
+    '/account',
+    authMiddleware,
+    validate({ body: deleteAccountBodySchema }),
+    authController.deleteAccount
 );
 
 module.exports = authRouter;

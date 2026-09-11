@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import api from '../../services/api.js';
 
 export async function loginUser(credentials) {
   const response = await api.post(
@@ -27,5 +27,10 @@ export async function logoutUser() {
 export async function getCurrentUser() {
   const response = await api.get('/auth/get-me');
 
+  return response.data;
+}
+
+export async function deleteCurrentAccount(password) {
+  const response = await api.delete('/auth/account', { data: { password } });
   return response.data;
 }

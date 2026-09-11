@@ -4,6 +4,7 @@ const revokedTokenModel = require('../models/revokedToken.model');
 const { getAuthConfig, getCookieOptions, getClearCookieOptions } = require('../config/auth');
 const { createToken, verifyToken, isInvalidToken } = require('../utils/token');
 const AppError = require('../utils/appError');
+const InterviewReportModel = require('../models/interviewReport.model');
 
 function issueSession(res, user) {
     const token = createToken(user._id.toString());
@@ -18,6 +19,14 @@ function sanitizeUser(user) {
         username: user.username,
         email: user.email
     };
+}
+
+function duplicateRegistrationError(error) {
+    if (error?.code !== 11000) return null;
+    const field = Object.keys(error.keyPattern || error.keyValue || {})[0];
+    if (field === 'email') return new AppError(409, 'EMAIL_EXISTS', 'Email is already registered');
+    if (field === 'username') return new AppError(409, 'USERNAME_EXISTS', 'Username is already taken');
+    return new AppError(409, 'ACCOUNT_EXISTS', 'An account with those details already exists');
 }
 
 async function registerUser(req, res) {
@@ -40,11 +49,12 @@ async function registerUser(req, res) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const newUser = await userModel.create({
-        username,
-        email,
-        password: hashedPassword
-    });
+    let newUser;
+    try {
+        newUser = await userModel.create({ username, email, password: hashedPassword });
+    } catch (error) {
+        throw duplicateRegistrationError(error) || error;
+    }
 
     const sessionExpiresAt = issueSession(res, newUser);
 
@@ -124,9 +134,44 @@ async function getMeController(req, res) {
     });
 }
 
+async function deleteAccount(req, res) {
+    const user = await userModel.findById(req.user.id).select('+password');
+    if (!user || !await bcrypt.compare(req.body.password, user.password)) {
+        throw new AppError(401, 'INVALID_CREDENTIALS', 'Invalid credentials');
+    }
+
+    try {
+        await InterviewReportModel.deleteMany({ userId: req.user.id });
+        await revokedTokenModel.updateOne(
+            { jti: req.user.sessionId },
+            { $setOnInsert: { jti: req.user.sessionId, expiresAt: req.user.expiresAt } },
+            { upsert: true }
+        );
+        const result = await userModel.deleteOne({ _id: req.user.id });
+        if (result.deletedCount !== 1) {
+            throw new Error('Account disappeared during deletion');
+        }
+    } catch (error) {
+        if (error.code === 11000) {
+            // A concurrent revocation insert still means this session is revoked.
+            const result = await userModel.deleteOne({ _id: req.user.id });
+            if (result.deletedCount === 1) {
+                res.clearCookie(getAuthConfig().cookieName, getClearCookieOptions());
+                return res.status(200).json({ message: 'Account deleted successfully' });
+            }
+        }
+        throw new AppError(503, 'ACCOUNT_DELETION_FAILED', 'Unable to delete account. Please try again.');
+    }
+
+    res.clearCookie(getAuthConfig().cookieName, getClearCookieOptions());
+    return res.status(200).json({ message: 'Account deleted successfully' });
+}
+
 module.exports = {
     registerUser,
     loginUser,
     logoutUser,
-    getMeController
+    getMeController,
+    deleteAccount,
+    duplicateRegistrationError
 };

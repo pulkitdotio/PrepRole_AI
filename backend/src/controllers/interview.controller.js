@@ -87,6 +87,15 @@ async function getInterviewStats(req, res) {
     });
 }
 
+async function deleteInterviewReport(req, res) {
+    const deleted = await InterviewReportModel.findOneAndDelete({
+        _id: req.params.interviewId,
+        userId: req.user.id
+    });
+    if (!deleted) throw new AppError(404, 'REPORT_NOT_FOUND', 'Interview report not found');
+    return res.status(200).json({ message: 'Interview report deleted successfully' });
+}
+
 async function generateResumePDFController(req, res) {
     const { interviewReportId } = req.params;
     const report = await InterviewReportModel.findOne({ _id: interviewReportId, userId: req.user.id });
@@ -107,5 +116,6 @@ module.exports = {
     getInterviewReportById,
     getAllInterviewReports,
     getInterviewStats,
+    deleteInterviewReport,
     generateResumePDFController
 };

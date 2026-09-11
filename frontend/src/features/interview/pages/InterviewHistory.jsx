@@ -18,9 +18,11 @@ import InterviewList from '../components/InterviewList';
 
 import PageLoader from '../../../components/common/PageLoader';
 import ErrorMessage from '../../../components/common/ErrorMessage';
+import ConfirmDialog from '../../../components/common/ConfirmDialog';
 
 import {
   getInterviewReports,
+  deleteInterviewReport,
 } from '../interview.api';
 import { HISTORY_PAGE_SIZE, parseHistoryPage } from '../pagination';
 
@@ -44,6 +46,8 @@ function InterviewHistory() {
   const [error, setError] =
     useState('');
   const [pagination, setPagination] = useState(emptyPagination);
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const requested = searchParams.get('page');
@@ -99,6 +103,36 @@ function InterviewHistory() {
 
   const goToPage = (nextPage) => {
     setSearchParams(nextPage > 1 ? { page: String(nextPage) } : {});
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete?._id) return;
+    try {
+      setDeleting(true);
+      setError('');
+      await deleteInterviewReport(pendingDelete._id);
+      if (interviews.length === 1 && page > 1) {
+        goToPage(page - 1);
+      } else {
+        setInterviews(current => current.filter(item => item._id !== pendingDelete._id));
+        setPagination(current => {
+          const totalItems = Math.max(0, current.totalItems - 1);
+          const totalPages = Math.ceil(totalItems / current.limit);
+          return {
+            ...current,
+            totalItems,
+            totalPages,
+            hasNextPage: current.page < totalPages,
+            hasPreviousPage: current.page > 1,
+          };
+        });
+      }
+      setPendingDelete(null);
+    } catch (requestError) {
+      setError(requestError?.response?.data?.message || 'Unable to delete the interview report.');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const filteredInterviews =
@@ -181,6 +215,7 @@ function InterviewHistory() {
         interviews={
           filteredInterviews
         }
+        onDelete={setPendingDelete}
       />
 
       {pagination.totalPages > 0 && (
@@ -206,6 +241,16 @@ function InterviewHistory() {
           </button>
         </nav>
       )}
+
+      <ConfirmDialog
+        open={Boolean(pendingDelete)}
+        title="Delete interview report?"
+        description="This permanently deletes the saved report and its retained resume and job context."
+        confirmLabel="Delete report"
+        loading={deleting}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={confirmDelete}
+      />
 
     </div>
   );

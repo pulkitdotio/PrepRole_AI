@@ -20,5 +20,6 @@ const registerBodySchema = z.strictObject({
 });
 
 const loginBodySchema = z.strictObject({ email, password });
+const deleteAccountBodySchema = z.strictObject({ password });
 
-module.exports = { registerBodySchema, loginBodySchema };
+module.exports = { registerBodySchema, loginBodySchema, deleteAccountBodySchema };

@@ -27,7 +27,8 @@ const userSchema = new mongoose.Schema(
         }
     },
     {
-        timestamps: true
+        timestamps: true,
+        strict: 'throw'
     }
 );
 

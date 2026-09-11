@@ -30,6 +30,13 @@ interviewRouter.get(
     interviewController.getInterviewReportById
 );
 
+interviewRouter.delete(
+    '/report/:interviewId',
+    authMiddleware,
+    validate({ params: interviewReportParamsSchema }),
+    interviewController.deleteInterviewReport
+);
+
 interviewRouter.get(
     '/stats',
     authMiddleware,

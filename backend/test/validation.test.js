@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { validate } = require('../src/middlewares/validate.middleware');
-const { registerBodySchema, loginBodySchema } = require('../src/schemas/auth.schemas');
+const { registerBodySchema, loginBodySchema, deleteAccountBodySchema } = require('../src/schemas/auth.schemas');
 const {
     createInterviewBodySchema,
     interviewReportParamsSchema,
@@ -52,6 +52,16 @@ test('login requires exactly email and password', async () => {
         const error = await validateRequest({ body: loginBodySchema }, { body });
         assert.equal(error.statusCode, 400);
         assert.equal(error.message, 'Invalid request');
+    }
+});
+
+test('account deletion accepts only an untrimmed bounded password', async () => {
+    const valid = { body: { password: ' password ' } };
+    assert.equal(await validateRequest({ body: deleteAccountBodySchema }, valid), undefined);
+    assert.equal(valid.body.password, ' password ');
+    for (const body of [{}, { password: 'short' }, { password: 'x'.repeat(129) }, { password: 'password', userId: 'attacker' }]) {
+        const error = await validateRequest({ body: deleteAccountBodySchema }, { body });
+        assert.equal(error.code, 'VALIDATION_ERROR');
     }
 });
 

@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import api from '../../services/api.js';
 
 /**
  * Generate a new interview report.

@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const app = require('./src/app');
 const connectDB = require('./src/config/db');
-const revokedTokenModel = require('./src/models/revokedToken.model');
 const mongoose = require('mongoose');
 const logger = require('./src/utils/logger');
 const { createShutdownController, installProcessHandlers } = require('./src/serverLifecycle');
@@ -11,9 +10,6 @@ const PORT = process.env.PORT || 3000;
 
 async function startServer() {
     await connectDB();
-    // autoIndex is disabled in production; revocation needs these indexes before serving.
-    await revokedTokenModel.createIndexes();
-
     const server = await new Promise((resolve, reject) => {
         const listening = app.listen(PORT, () => resolve(listening));
         listening.once('error', reject);

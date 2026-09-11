@@ -2,6 +2,7 @@ import InterviewCard from './InterviewCard';
 
 function InterviewList({
   interviews = [],
+  onDelete,
 }) {
   if (!interviews.length) {
     return (
@@ -25,6 +26,7 @@ function InterviewList({
           <InterviewCard
             key={interview._id}
             interview={interview}
+            onDelete={onDelete}
           />
         )
       )}

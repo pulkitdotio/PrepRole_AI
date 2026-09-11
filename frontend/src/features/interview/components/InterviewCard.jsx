@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   CalendarDays,
+  Trash2,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -35,6 +36,7 @@ function formatDate(date) {
 
 function InterviewCard({
   interview,
+  onDelete,
 }) {
   const score =
     typeof interview?.matchScore ===
@@ -43,10 +45,8 @@ function InterviewCard({
       : 0;
 
   return (
-    <Link
-      to={`/interviews/report/${interview._id}`}
-      className="history-card"
-    >
+    <article className="history-card">
+      <Link to={`/interviews/report/${interview._id}`} className="history-card__link" aria-label={`Open ${interview?.title || 'interview report'}`}>
       <div className="history-card__avatar">
         {interview?.title
           ?.charAt(0)
@@ -86,7 +86,16 @@ function InterviewCard({
       <div className="history-card__arrow">
         <ArrowRight size={17} />
       </div>
-    </Link>
+      </Link>
+      <button
+        type="button"
+        className="history-card__delete"
+        aria-label={`Delete ${interview?.title || 'interview report'}`}
+        onClick={() => onDelete?.(interview)}
+      >
+        <Trash2 size={16} />
+      </button>
+    </article>
   );
 }
 

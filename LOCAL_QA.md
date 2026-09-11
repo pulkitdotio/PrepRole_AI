@@ -58,7 +58,18 @@ Use a local test database and disposable accounts. Do not paste real resumes, pa
 - [ ] Generate displays “Generating your tailored resume…” and explains that it may take a moment.
 - [ ] Repeated clicks while generation is pending produce only one request.
 - [ ] A failed generation shows a readable error and allows an explicit retry without a broken iframe.
-- [ ] Regeneration replaces the prior preview, and the latest PDF previews and downloads successfully.
+- [ ] Tailored resume preview loads.
+- [ ] PDF downloads and opens in a standard PDF viewer.
+- [ ] A typical student or early-career resume fits one page when its content reasonably permits.
+- [ ] The representative resume does not produce a nearly blank second page.
+- [ ] A genuinely long resume produces a readable, meaningfully filled second page.
+- [ ] Skills are grouped and easy to scan.
+- [ ] Project headings, technology labels, and bullets are readable.
+- [ ] No fabricated experience or skills are present.
+- [ ] Supported skills relevant to the target job are prioritized.
+- [ ] Name, headline, location, contact details, and professional links match the source input.
+- [ ] PDF text can be selected and copied.
+- [ ] Regeneration replaces the prior preview without leaking or breaking the previous object URL.
 - [ ] A failed report-context request does not show misleading generation controls and offers Retry.
 - [ ] User A cannot generate or retrieve a tailored resume from User B’s report ID.
 

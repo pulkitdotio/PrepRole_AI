@@ -9,12 +9,14 @@ const {
     interviewReportParamsSchema,
     resumePdfParamsSchema
 } = require('../schemas/interview.schemas');
+const { expensiveOperationLimiter } = require('../middlewares/rateLimit.middleware');
 
 const interviewRouter = express.Router();
 
 interviewRouter.post(
     '/',
     authMiddleware,
+    expensiveOperationLimiter,
     upload.single('resume'),
     validate({ body: createInterviewBodySchema }),
     interviewController.generateInterviewReport
@@ -36,6 +38,7 @@ interviewRouter.get(
 interviewRouter.post(
     '/resume/pdf/:interviewReportId',
     authMiddleware,
+    expensiveOperationLimiter,
     validate({ params: resumePdfParamsSchema }),
     interviewController.generateResumePDFController
 );

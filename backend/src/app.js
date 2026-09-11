@@ -1,11 +1,14 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const helmet = require('helmet');
 const { getAuthConfig } = require('./config/auth');
 const { getAllowedOrigins } = require('./config/origins');
 const { protectOrigin } = require('./middlewares/origin.middleware');
 const { ContentError } = require('./utils/content');
 const AppError = require('./utils/appError');
+const { generalApiLimiter } = require('./middlewares/rateLimit.middleware');
+const { createHelmetConfig } = require('./config/httpSecurity');
 
 // Validate before loading routes or opening a database/listening socket.
 getAuthConfig();
@@ -15,11 +18,14 @@ const authRouter = require('./routes/auth.routes');
 const interviewRouter = require('./routes/interview.routes');
 
 const app = express();
+app.disable('x-powered-by');
 
 if (process.env.NODE_ENV === 'production') {
+    // Intended topology: exactly one trusted reverse proxy in front of Express.
     app.set('trust proxy', 1);
 }
 
+app.use(helmet(createHelmetConfig()));
 app.use(protectOrigin);
 
 app.use(
@@ -40,8 +46,8 @@ app.use(
     })
 );
 
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// Current JSON endpoints only carry credentials; resume uploads use Multer.
+app.use(express.json({ limit: '32kb' }));
 
 app.use(cookieParser());
 
@@ -52,6 +58,7 @@ app.get('/health', (req, res) => {
     });
 });
 
+app.use('/api', generalApiLimiter);
 app.use('/api/auth', authRouter);
 app.use('/api/interview', interviewRouter);
 

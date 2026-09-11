@@ -1,11 +1,12 @@
 const revokedTokenModel = require('../models/revokedToken.model');
 const { getAuthConfig, getClearCookieOptions } = require('../config/auth');
 const { verifyToken, isInvalidToken } = require('../utils/token');
+const AppError = require('../utils/appError');
 
 async function authUser(req, res, next) {
     const unauthorized = () => {
         res.clearCookie(getAuthConfig().cookieName, getClearCookieOptions());
-        return res.status(401).json({ message: 'Authentication required' });
+        return next(new AppError(401, 'AUTHENTICATION_REQUIRED', 'Authentication required'));
     };
     try {
         const token = req.cookies?.[getAuthConfig().cookieName];
@@ -26,10 +27,7 @@ async function authUser(req, res, next) {
         next();
     } catch (error) {
         if (isInvalidToken(error)) return unauthorized();
-        console.error('Authentication revocation check failed');
-        return res.status(503).json({
-            message: 'Authentication temporarily unavailable'
-        });
+        return next(new AppError(503, 'AUTHENTICATION_UNAVAILABLE', 'Authentication temporarily unavailable'));
     }
 }
 

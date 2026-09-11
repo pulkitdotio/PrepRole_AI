@@ -1,4 +1,5 @@
 const { getAllowedOrigins } = require('../config/origins');
+const AppError = require('../utils/appError');
 
 function isTrustedRequest(req, allowedOrigins) {
     if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return true;
@@ -22,7 +23,7 @@ function isTrustedRequest(req, allowedOrigins) {
 
 function protectOrigin(req, res, next) {
     if (!isTrustedRequest(req, getAllowedOrigins())) {
-        return res.status(403).json({ message: 'Request origin is not trusted' });
+        return next(new AppError(403, 'ORIGIN_NOT_ALLOWED', 'Request origin is not trusted'));
     }
     next();
 }

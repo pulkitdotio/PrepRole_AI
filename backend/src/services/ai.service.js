@@ -1,5 +1,6 @@
 const { GoogleGenAI } = require('@google/genai');
 const L = require('../config/contentLimits');
+const logger = require('../utils/logger');
 const { ContentError } = require('../utils/content');
 const { buildPrompt } = require('./ai.prompts');
 const { interviewReportSchema, resumeDataSchema, responseJsonSchema } = require('./ai.schemas');
@@ -51,7 +52,7 @@ async function generateStructured(operation, input, {
         } catch (error) {
             const status = Number(error?.status ?? error?.response?.status ?? error?.code);
             const retryable = [429, 500, 502, 503, 504].includes(status);
-            console.warn('AI request failed', { operation, attempt, status: Number.isFinite(status) ? status : undefined });
+            logger.warn('ai.request_failed', { operation, attempt, status: Number.isFinite(status) ? status : undefined });
             if (!retryable || attempt === L.aiAttempts || now() >= deadline) {
                 throw new ContentError(502, 'Unable to complete AI generation. Please try again later.');
             }
@@ -67,7 +68,7 @@ async function generateStructured(operation, input, {
             return result;
         } catch {
             invalidOutput = true;
-            console.warn('AI output rejected', { operation, attempt });
+            logger.warn('ai.output_rejected', { operation, attempt });
         }
     }
     throw new ContentError(502, 'Unable to generate valid preparation content. Please try again.');

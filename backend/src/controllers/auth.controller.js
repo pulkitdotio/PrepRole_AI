@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const revokedTokenModel = require('../models/revokedToken.model');
 const { getAuthConfig, getCookieOptions, getClearCookieOptions } = require('../config/auth');
 const { createToken, verifyToken, isInvalidToken } = require('../utils/token');
+const AppError = require('../utils/appError');
 
 function issueSession(res, user) {
     const token = createToken(user._id.toString());
@@ -20,27 +21,7 @@ function sanitizeUser(user) {
 }
 
 async function registerUser(req, res) {
-    const username = typeof req.body?.username === 'string' ? req.body.username.trim() : '';
-    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
-    const password = typeof req.body?.password === 'string' ? req.body.password : '';
-
-    if (!username || !email || !password) {
-        return res.status(400).json({
-            message: 'Username, email and password are required'
-        });
-    }
-
-    if (username.length < 3) {
-        return res.status(400).json({
-            message: 'Username must be at least 3 characters'
-        });
-    }
-
-    if (password.length < 8) {
-        return res.status(400).json({
-            message: 'Password must be at least 8 characters'
-        });
-    }
+    const { username, email, password } = req.body;
 
     const existingUser = await userModel.findOne({
         $or: [
@@ -51,14 +32,10 @@ async function registerUser(req, res) {
 
     if (existingUser) {
         if (existingUser.email === email) {
-            return res.status(409).json({
-                message: 'Email is already registered'
-            });
+            throw new AppError(409, 'EMAIL_EXISTS', 'Email is already registered');
         }
 
-        return res.status(409).json({
-            message: 'Username is already taken'
-        });
+        throw new AppError(409, 'USERNAME_EXISTS', 'Username is already taken');
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -79,21 +56,12 @@ async function registerUser(req, res) {
 }
 
 async function loginUser(req, res) {
-    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
-    const password = typeof req.body?.password === 'string' ? req.body.password : '';
-
-    if (!email || !password) {
-        return res.status(400).json({
-            message: 'Email and password are required'
-        });
-    }
+    const { email, password } = req.body;
 
     const user = await userModel.findOne({ email }).select('+password');
 
     if (!user) {
-        return res.status(401).json({
-            message: 'Invalid credentials'
-        });
+        throw new AppError(401, 'INVALID_CREDENTIALS', 'Invalid credentials');
     }
 
     const isMatch = await bcrypt.compare(
@@ -102,9 +70,7 @@ async function loginUser(req, res) {
     );
 
     if (!isMatch) {
-        return res.status(401).json({
-            message: 'Invalid credentials'
-        });
+        throw new AppError(401, 'INVALID_CREDENTIALS', 'Invalid credentials');
     }
 
     const sessionExpiresAt = issueSession(res, user);
@@ -131,8 +97,7 @@ async function logoutUser(req, res) {
         } catch (error) {
             // Concurrent upserts and already-invalid cookies are safe repeat logouts.
             if (!isInvalidToken(error) && error.code !== 11000) {
-                console.error('Logout revocation storage failed');
-                return res.status(503).json({ message: 'Unable to revoke session. Local cookie cleared.' });
+                throw new AppError(503, 'SESSION_REVOCATION_FAILED', 'Unable to revoke session. Local cookie cleared.');
             }
         }
     }
@@ -149,9 +114,7 @@ async function getMeController(req, res) {
 
     if (!user) {
         res.clearCookie(getAuthConfig().cookieName, getClearCookieOptions());
-        return res.status(401).json({
-            message: 'Authentication required'
-        });
+        throw new AppError(401, 'AUTHENTICATION_REQUIRED', 'Authentication required');
     }
 
     return res.status(200).json({

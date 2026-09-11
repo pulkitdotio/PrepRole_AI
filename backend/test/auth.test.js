@@ -77,9 +77,10 @@ test('unsafe requests require exact trusted Origin or trusted Referer fallback',
         assert.equal(isTrustedRequest(request(method, undefined, 'not a URL'), trusted), false);
     }
     for (const method of ['GET', 'HEAD', 'OPTIONS']) assert.equal(isTrustedRequest(request(method), trusted), true);
-    const res = response();
-    protectOrigin(request('POST', 'https://untrusted.example'), res, () => assert.fail('must not pass'));
-    assert.equal(res.statusCode, 403);
+    let blocked;
+    protectOrigin(request('POST', 'https://untrusted.example'), response(), error => { blocked = error; });
+    assert.equal(blocked.statusCode, 403);
+    assert.equal(blocked.code, 'ORIGIN_NOT_ALLOWED');
 });
 
 test('JWT has only standard session claims and a unique cryptographic ID', () => {
@@ -123,7 +124,7 @@ test('registration hashes at cost 12 without trimming password and returns sanit
     let stored;
     t.mock.method(users, 'create', async data => { stored = data; return { ...data, _id: userId }; });
     const res = response();
-    await controller.registerUser({ body: { username: ' Candidate ', email: ' CANDIDATE@example.com ', password: ' password ' } }, res);
+    await controller.registerUser({ body: { username: 'Candidate', email: 'candidate@example.com', password: ' password ' } }, res);
     assert.equal(res.statusCode, 201);
     assert.equal(bcrypt.getRounds(stored.password), 12);
     assert.equal(await bcrypt.compare(' password ', stored.password), true);
@@ -145,15 +146,15 @@ test('login explicitly selects password; wrong password and unknown user have th
     await controller.loginUser({ body: { email: user.email, password: ' password ' } }, good);
     assert.equal(good.statusCode, 200);
     assert.equal(good.body.user.password, undefined);
-    const bad = response();
-    await controller.loginUser({ body: { email: user.email, password: 'wrong password' } }, bad);
+    await assert.rejects(
+        controller.loginUser({ body: { email: user.email, password: 'wrong password' } }, response()),
+        error => error.statusCode === 401 && error.code === 'INVALID_CREDENTIALS' && error.message === 'Invalid credentials'
+    );
     foundUser = null;
-    const unknown = response();
-    await controller.loginUser({ body: { email: user.email, password: 'wrong password' } }, unknown);
-    assert.equal(bad.statusCode, 401);
-    assert.equal(unknown.statusCode, 401);
-    assert.deepEqual(bad.body, { message: 'Invalid credentials' });
-    assert.deepEqual(unknown.body, bad.body);
+    await assert.rejects(
+        controller.loginUser({ body: { email: user.email, password: 'wrong password' } }, response()),
+        error => error.statusCode === 401 && error.code === 'INVALID_CREDENTIALS' && error.message === 'Invalid credentials'
+    );
 });
 
 test('logout stores only jti/expiry, is idempotent, and blocks subsequent token use', async t => {
@@ -179,8 +180,8 @@ test('logout stores only jti/expiry, is idempotent, and blocks subsequent token 
         assert.deepEqual(res.cleared[0], ['token', getClearCookieOptions()]);
     }
     assert.equal(records.size, 1);
-    const denied = response();
-    await authMiddleware(req, denied, () => assert.fail('revoked token accepted'));
+    let denied;
+    await authMiddleware(req, response(), error => { denied = error; });
     assert.equal(denied.statusCode, 401);
 });
 
@@ -196,16 +197,14 @@ test('missing, malformed and expired logout cookies succeed without a database w
 });
 
 test('revocation database failures fail closed and logout still clears cookie', async t => {
-    t.mock.method(console, 'error', () => {});
     t.mock.method(revoked, 'exists', async () => { throw new Error('database offline'); });
     t.mock.method(revoked, 'updateOne', async () => { throw new Error('database offline'); });
     const req = { cookies: { token: createToken(userId) } };
-    const res = response();
-    await authMiddleware(req, res, () => assert.fail('database failure authenticated'));
-    assert.equal(res.statusCode, 503);
+    let middlewareError;
+    await authMiddleware(req, response(), error => { middlewareError = error; });
+    assert.equal(middlewareError.statusCode, 503);
     const logout = response();
-    await controller.logoutUser(req, logout);
-    assert.equal(logout.statusCode, 503);
+    await assert.rejects(controller.logoutUser(req, logout), error => error.statusCode === 503);
     assert.equal(logout.cleared.length, 1);
 });
 
@@ -219,8 +218,7 @@ test('get-me returns no password and clears a stale cookie if the user was delet
     assert.equal(good.body.user.password, undefined);
     foundUser = null;
     const stale = response();
-    await controller.getMeController(req, stale);
-    assert.equal(stale.statusCode, 401);
+    await assert.rejects(controller.getMeController(req, stale), error => error.statusCode === 401);
     assert.equal(stale.cleared.length, 1);
 });
 

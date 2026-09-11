@@ -10,6 +10,6 @@ Authentication rollout notes
 - Logout is POST only. Invalid/expired/missing cookies return success and are cleared. Revocation writes are idempotent. Storage failures return 503 and still clear the local cookie: a copied token could remain valid until expiration or database recovery, so the UI does not report successful server sign-out in that case.
 - Login, registration and get-me return only sanitized user data plus sessionExpiresAt (not a bearer credential). The frontend uses the timestamp for local expiry and reacts to protected interview API 401 responses. No redirects occur in Axios; ProtectedRoute retains destination state. If new protected API namespaces are added later, extend the interceptor's explicit protected-path matcher.
 - Tests use real JWT/bcrypt operations and mocked model methods, not a live MongoDB. Live cookie behavior, MongoDB TTL cleanup/index provisioning and browser flows need deployment verification.
-- Deferred: rate limiting, refresh rotation, password reset/email verification, OAuth/MFA, broader headers/CSP/request validation, and all PDF/Gemini/Puppeteer hardening.
+- Deferred: shared-store rate limiting for multiple API instances, refresh rotation, password reset/email verification, OAuth/MFA, and deployment-managed frontend CSP/network controls.
 
 References: [jsonwebtoken API](https://github.com/auth0/node-jsonwebtoken), [OWASP origin verification](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#using-standard-headers-to-verify-origin).

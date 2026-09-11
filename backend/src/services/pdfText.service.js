@@ -2,6 +2,7 @@ const { PDFParse } = require('pdf-parse');
 const { performance } = require('node:perf_hooks');
 const limits = require('../config/contentLimits');
 const { ContentError, normalizeText } = require('../utils/content');
+const logger = require('../utils/logger');
 
 // PDF bytes and MIME metadata are hostile. Parse only local bytes, never filenames/URLs.
 function validatePdfUpload(file) {
@@ -48,7 +49,7 @@ async function extractResumeText(file, { Parser = PDFParse, now = () => performa
     } finally {
         // Cooperative checks cannot terminate synchronous PDF.js work or enforce a heap cap.
         // True CPU/memory isolation requires a separate process, deferred from this phase.
-        if (parser) await parser.destroy().catch(() => { console.warn('PDF parser cleanup failed'); });
+        if (parser) await parser.destroy().catch(() => { logger.warn('pdf_parser.cleanup_failed'); });
     }
 }
 

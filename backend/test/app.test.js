@@ -33,6 +33,7 @@ test('application smoke: health, CORS, origin protection and cookie-clearing rou
     t.after(() => new Promise(resolve => server.close(resolve)));
     const base = `http://127.0.0.1:${server.address().port}`;
     assert.equal((await fetch(base + '/health')).status, 200);
+    assert.equal((await fetch(base + '/ready')).status, 503);
     assert.equal((await fetch(base + '/api/auth/get-me')).status, 401);
     assert.equal((await fetch(base + '/api/auth/logout')).status, 404);
     for (const headers of [{ Origin: 'https://app.example.com' }, { Referer: 'https://app.example.com/workspace' }]) {
@@ -52,4 +53,18 @@ test('application smoke: health, CORS, origin protection and cookie-clearing rou
     assert.equal(preflight.status, 204);
     assert.equal(preflight.headers.get('access-control-allow-origin'), 'https://app.example.com');
     assert.equal(preflight.headers.get('access-control-allow-credentials'), 'true');
+
+    const invalidRegistration = await fetch(base + '/api/auth/register', {
+        method: 'POST',
+        headers: { Origin: 'https://app.example.com', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: 'Candidate', email: 'invalid', password: 'password', isAdmin: true
+        })
+    });
+    const invalidBody = await invalidRegistration.json();
+    assert.equal(invalidRegistration.status, 400);
+    assert.equal(invalidBody.message, 'Invalid request');
+    assert.equal(invalidBody.error.code, 'VALIDATION_ERROR');
+    assert.equal(invalidBody.requestId, invalidRegistration.headers.get('x-request-id'));
+    assert.ok(invalidBody.error.details.every(detail => !('received' in detail)));
 });

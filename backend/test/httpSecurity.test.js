@@ -31,7 +31,9 @@ test('API responses hide Express and include core security headers', () => {
         cwd: path.resolve(__dirname, '..'), encoding: 'utf8', timeout: 10000
     });
     assert.equal(child.status, 0, child.stderr);
-    const headers = JSON.parse(child.stdout.trim());
+    const headers = child.stdout.trim().split(/\r?\n/)
+        .map(line => JSON.parse(line))
+        .find(record => record['x-content-type-options']);
     assert.equal(headers['x-powered-by'], undefined);
     assert.equal(headers['x-content-type-options'], 'nosniff');
     assert.equal(headers['x-frame-options'], 'DENY');

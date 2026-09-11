@@ -18,9 +18,10 @@ test('both report and resume queries scope ownership and deny another user befor
         return null; // The document belongs to B, so an owner-scoped database query won't match.
     });
     for (const [handler, key] of [[controller.getInterviewReportById, 'interviewId'], [controller.generateResumePDFController, 'interviewReportId']]) {
-        const res = response();
-        await handler({ params: { [key]: reportId }, user: { id: userA } }, res);
-        assert.equal(res.statusCode, 404);
+        await assert.rejects(
+            handler({ params: { [key]: reportId }, user: { id: userA } }, response()),
+            error => error.statusCode === 404 && error.code === 'REPORT_NOT_FOUND'
+        );
     }
 });
 

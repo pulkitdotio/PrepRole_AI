@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 
 async function connectDB() {
     if (!process.env.MONGO_URI) {
@@ -10,9 +11,9 @@ async function connectDB() {
             autoIndex: process.env.NODE_ENV !== 'production'
         });
 
-        console.log('MongoDB connected successfully');
+        logger.info('database.connected');
     } catch (error) {
-        console.error('Error connecting to MongoDB');
+        logger.error('database.connection_failed', { errorType: error.name || 'Error' });
         throw error;
     }
 }

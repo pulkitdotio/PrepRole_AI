@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const { renderResumeHTML } = require('./resume.template');
 const { ContentError } = require('../utils/content');
+const logger = require('../utils/logger');
 const L = require('../config/contentLimits');
 
 async function renderResumePDF(data, { launcher = puppeteer } = {}) {
@@ -35,7 +36,7 @@ async function renderResumePDF(data, { launcher = puppeteer } = {}) {
         if (pdf.length > L.generatedPdfBytes) throw new Error('PDF exceeds size budget');
         return pdf;
     } catch {
-        console.warn('Resume PDF rendering failed');
+        logger.warn('resume_pdf.render_failed');
         throw new ContentError(502, 'Unable to generate the resume PDF');
     } finally {
         try {

@@ -54,6 +54,9 @@ async function generateStructured(operation, input, {
             const retryable = [429, 500, 502, 503, 504].includes(status);
             logger.warn('ai.request_failed', { operation, attempt, status: Number.isFinite(status) ? status : undefined });
             if (!retryable || attempt === L.aiAttempts || now() >= deadline) {
+                if (status === 429) {
+                    throw new ContentError(429, 'AI generation is temporarily at capacity. Please wait a minute and try again.');
+                }
                 throw new ContentError(502, 'Unable to complete AI generation. Please try again later.');
             }
             await sleep(Math.min(500 * 2 ** (attempt - 1), Math.max(0, deadline - now())));

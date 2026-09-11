@@ -171,3 +171,17 @@ test('permanent API errors stop immediately and pathological output retries are 
     await assert.rejects(generateStructured('resume', fixture.profile, { client }), ContentError);
     assert.equal(calls, L.aiAttempts);
 });
+
+test('provider rate limits remain retryable but return an accurate safe response', async t => {
+    t.mock.method(console, 'warn', () => {});
+    let calls = 0;
+    const client = { models: { generateContent: async () => {
+        calls++;
+        throw Object.assign(new Error('private provider quota detail'), { status: 429 });
+    } } };
+    await assert.rejects(
+        generateStructured('resume', fixture.profile, { client, sleep: async () => {} }),
+        error => error.status === 429 && error.message === 'AI generation is temporarily at capacity. Please wait a minute and try again.'
+    );
+    assert.equal(calls, L.aiAttempts);
+});

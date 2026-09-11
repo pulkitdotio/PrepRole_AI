@@ -336,6 +336,16 @@
       rgba($purple-light, 0.06);
   }
 
+  &:focus-within {
+    outline: 3px solid rgba($purple-light, 0.45);
+    outline-offset: 2px;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
   &__icon {
     width: 54px;
     height: 54px;
@@ -765,6 +775,32 @@
     padding: 12px 8px 12px 15px;
     color: inherit;
     text-decoration: none;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  &__replace {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid $border;
+    border-radius: $radius-sm;
+    color: $text-secondary;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:focus-within {
+      outline: 3px solid rgba($purple-light, 0.45);
+      outline-offset: 2px;
+    }
   }
 
   &__delete {

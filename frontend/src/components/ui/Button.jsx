@@ -6,6 +6,7 @@ function Button({
   variant = 'primary',
   size = 'medium',
   loading = false,
+  loadingLabel = 'Working…',
   disabled = false,
   icon,
   className = '',
@@ -25,10 +26,14 @@ function Button({
         .filter(Boolean)
         .join(' ')}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       {...props}
     >
       {loading ? (
-        <Spinner size="small" />
+        <>
+          <Spinner size="small" />
+          <span>{loadingLabel}</span>
+        </>
       ) : (
         <>
           {icon}

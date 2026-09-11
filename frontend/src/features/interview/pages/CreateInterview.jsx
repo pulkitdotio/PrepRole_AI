@@ -475,22 +475,11 @@ function CreateInterview() {
                   handleGenerate
                 }
                 loading={loading}
+                loadingLabel="Generating report…"
                 disabled={loading}
               >
-                {loading ? (
-                  <>
-                    <LoaderCircle
-                      size={16}
-                      className="spin"
-                    />
-                    Generating report…
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={16} />
-                    Generate Interview Report
-                  </>
-                )}
+                <Sparkles size={16} />
+                Generate Interview Report
               </Button>
             )}
 

@@ -19,6 +19,10 @@ const Textarea = forwardRef(
   ) {
     const generatedId = useId();
     const textareaId = props.id || generatedId;
+    const describedBy = [
+      error ? `${textareaId}-error` : '',
+      showCount && maxLength ? `${textareaId}-count` : '',
+    ].filter(Boolean).join(' ') || undefined;
 
     const currentLength =
       typeof value === 'string'
@@ -44,7 +48,7 @@ const Textarea = forwardRef(
           ref={ref}
           id={textareaId}
           aria-invalid={Boolean(error)}
-          aria-describedby={error ? `${textareaId}-error` : undefined}
+          aria-describedby={describedBy}
           className={[
             'form-textarea',
             error
@@ -68,8 +72,8 @@ const Textarea = forwardRef(
 
           {showCount &&
             maxLength && (
-              <span className="textarea-count">
-                {currentLength}/{maxLength}
+              <span className="textarea-count" id={`${textareaId}-count`}>
+                {currentLength} of {maxLength} characters
               </span>
             )}
         </div>

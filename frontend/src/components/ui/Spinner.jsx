@@ -2,7 +2,7 @@ function Spinner({ size = 'medium' }) {
   return (
     <span
       className={`spinner spinner--${size}`}
-      aria-label="Loading"
+      aria-hidden="true"
     />
   );
 }

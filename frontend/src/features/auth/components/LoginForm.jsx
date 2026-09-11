@@ -77,6 +77,7 @@ function LoginForm() {
         value={form.email}
         onChange={handleChange}
         autoComplete="email"
+        disabled={loading}
         required
       />
 
@@ -93,12 +94,14 @@ function LoginForm() {
           value={form.password}
           onChange={handleChange}
           autoComplete="current-password"
+          disabled={loading}
           required
         />
 
         <button
           type="button"
           className="password-toggle"
+          disabled={loading}
           onClick={() =>
             setShowPassword(
               (current) => !current
@@ -121,6 +124,7 @@ function LoginForm() {
       <Button
         type="submit"
         loading={loading}
+        loadingLabel="Signing in…"
         size="large"
         className="auth-submit"
       >

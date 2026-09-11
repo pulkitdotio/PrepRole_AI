@@ -12,7 +12,7 @@ function ProtectedRoute() {
   const location = useLocation();
 
   if (loading) {
-    return <PageLoader />;
+    return <PageLoader message="Checking your session…" />;
   }
 
   if (!isAuthenticated) {

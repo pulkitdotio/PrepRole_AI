@@ -113,6 +113,7 @@ function RegisterForm() {
         value={form.username}
         onChange={handleChange}
         autoComplete="username"
+        disabled={loading}
         required
       />
 
@@ -124,6 +125,7 @@ function RegisterForm() {
         value={form.email}
         onChange={handleChange}
         autoComplete="email"
+        disabled={loading}
         required
       />
 
@@ -140,12 +142,14 @@ function RegisterForm() {
           value={form.password}
           onChange={handleChange}
           autoComplete="new-password"
+          disabled={loading}
           required
         />
 
         <button
           type="button"
           className="password-toggle"
+          disabled={loading}
           onClick={() =>
             setShowPassword(
               (current) => !current
@@ -178,12 +182,14 @@ function RegisterForm() {
           value={form.confirmPassword}
           onChange={handleChange}
           autoComplete="new-password"
+          disabled={loading}
           required
         />
 
         <button
           type="button"
           className="password-toggle"
+          disabled={loading}
           onClick={() =>
             setShowConfirmPassword(
               (current) => !current
@@ -206,6 +212,7 @@ function RegisterForm() {
       <Button
         type="submit"
         loading={loading}
+        loadingLabel="Creating account…"
         size="large"
         className="auth-submit"
       >

@@ -57,6 +57,7 @@ function ResumeUpload({ file, onChange, error, disabled = false }) {
                 accept="application/pdf,.pdf"
                 onChange={chooseFile}
                 aria-label="Replace resume"
+                aria-describedby={error ? errorId : undefined}
                 disabled={disabled}
               />
               <RefreshCw size={16} aria-hidden="true" />

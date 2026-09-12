@@ -2,7 +2,6 @@ import {
   ArrowRight,
   BarChart3,
   BriefcaseBusiness,
-  Check,
   FileSearch,
   MessageSquareText,
   Route,
@@ -14,6 +13,7 @@ import { Link } from 'react-router';
 import Logo from '../../../components/common/Logo';
 import AuthLink from '../../auth/components/AuthLink';
 import PublicHeader from '../components/PublicHeader';
+import RoleJourney from '../components/RoleJourney';
 
 const workflow = [
   { icon: BriefcaseBusiness, number: '01', title: 'Add the role', description: 'Share the job title, description, and the context that matters to you.' },
@@ -26,41 +26,6 @@ const reportDetails = [
   { icon: Target, label: 'Skill gap analysis', value: 'Prioritized by severity' },
   { icon: FileSearch, label: 'Tailored resume', value: 'Generated from your report' },
 ];
-
-function ProductPreview() {
-  return (
-    <aside className="product-preview" aria-label="Example PrepRole AI interview report">
-      <div className="product-preview__bar">
-        <span><i /><i /><i /></span>
-        <small>Interview Report</small>
-        <span className="preview-status">Ready</span>
-      </div>
-      <div className="product-preview__body">
-        <div className="preview-role">
-          <div className="preview-role__mark"><BriefcaseBusiness size={18} /></div>
-          <div><small>Target role</small><strong>Senior Product Engineer</strong></div>
-          <div className="preview-score"><strong>82</strong><span>% match</span></div>
-        </div>
-        <div className="preview-meter" aria-hidden="true"><span /></div>
-        <div className="preview-grid">
-          <section className="preview-question">
-            <span>Technical preparation</span>
-            <h3>How would you design a resilient client-side data layer?</h3>
-            <p>Connect your answer to trade-offs, failure states, and user experience.</p>
-          </section>
-          <section className="preview-focus">
-            <span>Focus next</span>
-            <ul>
-              <li><Check size={13} />System design examples</li>
-              <li><Check size={13} />Cross-team leadership</li>
-              <li><Check size={13} />Performance narratives</li>
-            </ul>
-          </section>
-        </div>
-      </div>
-    </aside>
-  );
-}
 
 function Home() {
   return (
@@ -85,7 +50,7 @@ function Home() {
             </div>
             <div className="home-trust-note"><ShieldCheck size={15} /><span>Your reports stay in your private workspace.</span></div>
           </div>
-          <ProductPreview />
+          <RoleJourney />
         </section>
 
         <section id="how-it-works" className="home-section public-container" aria-labelledby="how-title">

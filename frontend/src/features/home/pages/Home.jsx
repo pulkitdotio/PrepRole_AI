@@ -1,72 +1,152 @@
-import { ArrowRight, BrainCircuit, CheckCircle2, FileText, History, Sparkles, Target } from 'lucide-react';
+import {
+  ArrowRight,
+  BarChart3,
+  BriefcaseBusiness,
+  Check,
+  FileSearch,
+  MessageSquareText,
+  Route,
+  ShieldCheck,
+  Target,
+  Upload,
+} from 'lucide-react';
 import { Link } from 'react-router';
-import Badge from '../../../components/ui/Badge';
 import Logo from '../../../components/common/Logo';
 import AuthLink from '../../auth/components/AuthLink';
 import PublicHeader from '../components/PublicHeader';
 
-const tools = [
-  { icon: BrainCircuit, title: 'AI Interview Preparation', label: 'Available', description: 'Turn your experience and a job description into role-specific questions, skill gap insights, and a focused preparation plan.', to: '/interviews/new', action: 'Start Preparing' },
-  { icon: FileText, title: 'AI Tailored Resume', label: 'From your interview report', description: 'Create a job-tailored resume using your profile and target role. Start with interview preparation, then generate your resume from the report.', to: '/interviews/new', action: 'Prepare & Tailor Resume' },
-  { icon: History, title: 'Interview History & Reports', label: 'Your private workspace', description: 'Revisit your preparation reports, review your match scores, and pick up where you left off. Your history stays in your account.', to: '/interviews', action: 'View My Reports' },
+const workflow = [
+  { icon: BriefcaseBusiness, number: '01', title: 'Add the role', description: 'Share the job title, description, and the context that matters to you.' },
+  { icon: Upload, number: '02', title: 'Upload your resume', description: 'Use your current PDF so the analysis starts from your real experience.' },
+  { icon: Route, number: '03', title: 'Follow a focused plan', description: 'Review your match, practice questions, skill gaps, and next steps.' },
 ];
 
-const steps = [
-  ['Add job information', 'Tell us about yourself and the role you want.'],
-  ['Upload your resume', 'Add your current resume as a PDF.'],
-  ['Let AI analyze your profile', 'See how your experience matches the job.'],
-  ['Prepare for your next step', 'Explore your preparation report and generate a tailored resume.'],
+const reportDetails = [
+  { icon: MessageSquareText, label: 'Interview questions', value: 'Technical + behavioral' },
+  { icon: Target, label: 'Skill gap analysis', value: 'Prioritized by severity' },
+  { icon: FileSearch, label: 'Tailored resume', value: 'Generated from your report' },
 ];
+
+function ProductPreview() {
+  return (
+    <aside className="product-preview" aria-label="Example PrepRole AI interview report">
+      <div className="product-preview__bar">
+        <span><i /><i /><i /></span>
+        <small>Interview Report</small>
+        <span className="preview-status">Ready</span>
+      </div>
+      <div className="product-preview__body">
+        <div className="preview-role">
+          <div className="preview-role__mark"><BriefcaseBusiness size={18} /></div>
+          <div><small>Target role</small><strong>Senior Product Engineer</strong></div>
+          <div className="preview-score"><strong>82</strong><span>% match</span></div>
+        </div>
+        <div className="preview-meter" aria-hidden="true"><span /></div>
+        <div className="preview-grid">
+          <section className="preview-question">
+            <span>Technical preparation</span>
+            <h3>How would you design a resilient client-side data layer?</h3>
+            <p>Connect your answer to trade-offs, failure states, and user experience.</p>
+          </section>
+          <section className="preview-focus">
+            <span>Focus next</span>
+            <ul>
+              <li><Check size={13} />System design examples</li>
+              <li><Check size={13} />Cross-team leadership</li>
+              <li><Check size={13} />Performance narratives</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </aside>
+  );
+}
 
 function Home() {
   return (
     <div className="public-page">
       <a className="skip-link" href="#main-content">Skip to content</a>
       <PublicHeader />
-      <main id="main-content" tabIndex={-1} className="public-container">
-        <section className="home-hero" aria-labelledby="home-title">
+      <main id="main-content" tabIndex={-1}>
+        <section className="home-hero public-container" aria-labelledby="home-title">
+          <div className="home-hero__glow" aria-hidden="true" />
           <div className="home-hero__copy">
-            <p className="home-eyebrow"><Sparkles size={16} aria-hidden="true" /> Your next opportunity starts here</p>
-            <h1 id="home-title">Prepare smarter.<br /><span>Get hired faster.</span></h1>
-            <p className="home-hero__description">Go into your next interview with a plan. PrepAI turns your resume and a job description into personalized preparation, practical insights, and a resume tailored to the role.</p>
+            <p className="home-eyebrow"><span>Role preparation, made personal</span></p>
+            <h1 id="home-title">Prepare for the role.<br /><span>Not just the interview.</span></h1>
+            <p className="home-hero__description">
+              Turn your resume and a target job into a practical interview report, focused questions,
+              skill-gap insights, and a tailored resume.
+            </p>
             <div className="home-actions">
-              <AuthLink to="/interviews/new" className="button button--primary button--large">Start Interview Preparation <ArrowRight size={17} aria-hidden="true" /></AuthLink>
-              <Link to="/#tools" className="button button--secondary button--large">Explore AI Tools</Link>
+              <AuthLink to="/interviews/new" className="button button--primary button--large">
+                Start role preparation <ArrowRight size={16} aria-hidden="true" />
+              </AuthLink>
+              <Link to="/#how-it-works" className="button button--secondary button--large">See how it works</Link>
             </div>
-            <p className="home-note">Explore first. Sign in when you’re ready to prepare.</p>
+            <div className="home-trust-note"><ShieldCheck size={15} /><span>Your reports stay in your private workspace.</span></div>
           </div>
-          <aside className="home-preview" aria-label="What your preparation report includes">
-            <div className="home-preview__heading"><span className="home-icon"><Target size={22} aria-hidden="true" /></span><span>Your next role.<br /><strong>A clearer plan.</strong></span></div>
-            <p>Built around your experience and the job you want.</p>
-            <ul>
-              {['Profile-to-role match insights', 'Technical & behavioral questions', 'Skill gaps worth focusing on', 'A personalized preparation plan'].map(item => <li key={item}><CheckCircle2 size={17} aria-hidden="true" />{item}</li>)}
-            </ul>
-            <div className="home-preview__footer"><FileText size={18} aria-hidden="true" />Then tailor your resume from your report.</div>
-          </aside>
+          <ProductPreview />
         </section>
 
-        <section id="tools" tabIndex={-1} className="home-section" aria-labelledby="tools-title">
-          <div className="home-section__heading"><p className="home-eyebrow">Your preparation toolkit</p><h2 id="tools-title">One role. A more focused approach.</h2><p>Start with the opportunity. Build the preparation around you.</p></div>
-          <div className="home-tools">
-            {tools.map(({ icon: Icon, title, label, description, to, action }) => (
-              <article className="home-tool" key={title}>
-                <span className="home-icon"><Icon size={23} aria-hidden="true" /></span>
-                <Badge>{label}</Badge>
+        <section id="how-it-works" className="home-section public-container" aria-labelledby="how-title">
+          <div className="home-section__heading home-section__heading--split">
+            <div><p className="home-eyebrow">A focused workflow</p><h2 id="how-title">From opportunity to action plan.</h2></div>
+            <p>Three clear steps. Your experience stays at the center.</p>
+          </div>
+          <ol className="home-workflow">
+            {workflow.map(({ icon: Icon, number, title, description }) => (
+              <li key={title}>
+                <span className="workflow-number">{number}</span>
+                <span className="home-icon"><Icon size={19} aria-hidden="true" /></span>
                 <h3>{title}</h3><p>{description}</p>
-                <AuthLink to={to} className="button button--secondary button--medium">{action}<ArrowRight size={15} aria-hidden="true" /></AuthLink>
-              </article>
+              </li>
             ))}
+          </ol>
+        </section>
+
+        <section id="tools" className="home-section home-intelligence" aria-labelledby="intelligence-title">
+          <div className="public-container home-intelligence__inner">
+            <div className="home-intelligence__copy">
+              <p className="home-eyebrow">Interview intelligence</p>
+              <h2 id="intelligence-title">Know where you stand. Know what to do next.</h2>
+              <p>PrepRole AI compares the role with your actual background and organizes the result into a report you can work through.</p>
+              <AuthLink to="/interviews/new" className="section-link">Create an Interview Report <ArrowRight size={15} /></AuthLink>
+            </div>
+            <div className="intelligence-panel">
+              <div className="intelligence-panel__header"><BarChart3 size={17} /><span>Role preparation snapshot</span></div>
+              {reportDetails.map(({ icon: Icon, label, value }) => (
+                <div className="intelligence-row" key={label}>
+                  <span className="intelligence-row__icon"><Icon size={17} /></span>
+                  <span><small>{label}</small><strong>{value}</strong></span>
+                  <ArrowRight size={15} aria-hidden="true" />
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section id="how-it-works" tabIndex={-1} className="home-section" aria-labelledby="how-title">
-          <div className="home-section__heading"><p className="home-eyebrow">How it works</p><h2 id="how-title">From job description to a plan of action.</h2></div>
-          <ol className="home-steps">{steps.map(([title, description], index) => <li key={title}><span className="home-step-number" aria-hidden="true">0{index + 1}</span><h3>{title}</h3><p>{description}</p></li>)}</ol>
+        <section className="home-section public-container resume-feature" aria-labelledby="resume-title">
+          <div className="resume-feature__visual" aria-hidden="true">
+            <div className="resume-sheet">
+              <span className="resume-sheet__name" /><span className="resume-sheet__role" />
+              <i /><i /><i /><i /><i />
+            </div>
+            <div className="resume-signal"><Target size={17} /><span>Aligned to your target role</span></div>
+          </div>
+          <div className="resume-feature__copy">
+            <p className="home-eyebrow">Tailored Resume</p>
+            <h2 id="resume-title">Carry the same role context into your resume.</h2>
+            <p>Generate an ATS-friendly resume from the Interview Report using your original resume, self-description, and target job—without invented experience.</p>
+            <AuthLink to="/interviews/new" className="button button--secondary button--medium">Prepare and tailor <ArrowRight size={15} /></AuthLink>
+          </div>
         </section>
 
-        <section className="home-final" aria-labelledby="final-title"><div><p className="home-eyebrow">Make your next move count</p><h2 id="final-title">Bring your experience. Build your confidence.</h2><p>Your next interview deserves preparation that fits you.</p></div><AuthLink to="/interviews/new" className="button button--primary button--large">Start Preparing<ArrowRight size={17} aria-hidden="true" /></AuthLink></section>
+        <section className="home-final public-container" aria-labelledby="final-title">
+          <div><p className="home-eyebrow">Your next role deserves focus</p><h2 id="final-title">Bring the opportunity. Leave with a plan.</h2></div>
+          <AuthLink to="/interviews/new" className="button button--light button--large">Start preparing <ArrowRight size={16} /></AuthLink>
+        </section>
       </main>
-      <footer className="public-container public-footer"><Logo /><p>Better preparation. Brighter opportunities.</p><Link to="/#tools">Explore tools</Link></footer>
+      <footer className="public-container public-footer"><Logo /><p>Role-specific preparation, built around you.</p><Link to="/#how-it-works">How it works</Link></footer>
     </div>
   );
 }

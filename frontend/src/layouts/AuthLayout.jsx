@@ -1,7 +1,6 @@
-import { BrainCircuit, FileSearch, Sparkles, Target, Zap } from 'lucide-react';
+import { ArrowLeft, Check, FileSearch, MessageSquareText, Target } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 import { getAuthState } from '../features/auth/authRedirect';
-
 import Logo from '../components/common/Logo';
 
 function AuthLayout({ children, mode = 'login' }) {
@@ -10,31 +9,30 @@ function AuthLayout({ children, mode = 'login' }) {
 
   return (
     <main className="auth-page">
-      <section className="auth-hero" aria-label="PrepAI overview">
-        <div className="auth-hero__content">
-          <Link to="/" aria-label="PrepAI home"><Logo /></Link>
-          <div className="auth-hero__copy">
-            <div className="hero-kicker"><Sparkles size={15} />AI-powered interview preparation</div>
-            <h1>Prepare smarter.<br />Get hired faster.</h1>
-            <p>Turn your experience and a job description into a focused, practical interview plan.</p>
-            <div className="hero-features">
-              <div><span><BrainCircuit size={17} /></span>AI-powered analysis</div>
-              <div><span><Target size={17} /></span>Role-specific questions</div>
-              <div><span><Zap size={17} /></span>Skill gap identification</div>
-              <div><span><FileSearch size={17} /></span>Tailored resume support</div>
-            </div>
+      <section className="auth-story" aria-label="PrepRole AI overview">
+        <div className="auth-story__inner">
+          <Link to="/" aria-label="PrepRole AI home"><Logo /></Link>
+          <div className="auth-story__copy">
+            <p className="page-eyebrow">Role preparation workspace</p>
+            <h1>Walk into the interview with a clearer point of view.</h1>
+            <p>Build preparation around the role, your experience, and the gaps worth addressing.</p>
           </div>
-          <p className="auth-hero__quote">“Better preparation. Brighter opportunities.”</p>
+          <div className="auth-snapshot" aria-label="What PrepRole AI provides">
+            <div><span><Target size={16} /></span><strong>Match insights</strong><Check size={14} /></div>
+            <div><span><MessageSquareText size={16} /></span><strong>Practice questions</strong><Check size={14} /></div>
+            <div><span><FileSearch size={16} /></span><strong>Tailored resume</strong><Check size={14} /></div>
+          </div>
         </div>
       </section>
 
       <section className="auth-panel">
         <div className="auth-panel__top">
-          <span>{isLogin ? "Don't have an account?" : 'Already have an account?'}</span>
-          <Link to={isLogin ? '/register' : '/login'} state={getAuthState(location.state?.from)}>{isLogin ? 'Sign up' : 'Sign in'}</Link>
+          <Link to="/" className="auth-home-link"><ArrowLeft size={14} />Home</Link>
+          <span>{isLogin ? "New to PrepRole AI?" : 'Already have an account?'}</span>
+          <Link to={isLogin ? '/register' : '/login'} state={getAuthState(location.state?.from)}>{isLogin ? 'Create account' : 'Sign in'}</Link>
         </div>
-        <Link to="/" className="auth-home-link">Back to PrepAI home</Link>
         <div className="auth-card">{children}</div>
+        <p className="auth-panel__note">Your preparation data remains in your private account workspace.</p>
       </section>
     </main>
   );

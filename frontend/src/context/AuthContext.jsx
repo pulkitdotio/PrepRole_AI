@@ -57,8 +57,9 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     const version = sessionVersion.current;
-    getCurrentUser()
+    getCurrentUser({ signal: controller.signal })
       .then(response => {
         if (active && version === sessionVersion.current) {
           setUser(response.user);
@@ -71,7 +72,10 @@ export function AuthProvider({ children }) {
       .finally(() => {
         if (active) setLoading(false);
       });
-    return () => { active = false; };
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [clearSession]);
 
   const login = useCallback(async credentials => {

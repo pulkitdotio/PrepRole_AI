@@ -24,8 +24,8 @@ export async function logoutUser() {
   return response.data;
 }
 
-export async function getCurrentUser() {
-  const response = await api.get('/auth/get-me');
+export async function getCurrentUser({ signal } = {}) {
+  const response = await api.get('/auth/get-me', { signal });
 
   return response.data;
 }

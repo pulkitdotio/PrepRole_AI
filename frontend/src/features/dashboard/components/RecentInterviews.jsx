@@ -86,11 +86,11 @@ function RecentInterviews({
 
         <div>
           <span className="section-eyebrow">
-            Your preparation activity
+            Your latest work
           </span>
 
           <h2>
-            Recent Interviews
+            Recent Interview Reports
           </h2>
         </div>
 
@@ -98,7 +98,7 @@ function RecentInterviews({
           to="/interviews"
           className="section-link"
         >
-          View All
+          View history
 
           <ArrowRight size={15} />
         </Link>

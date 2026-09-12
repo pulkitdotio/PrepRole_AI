@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  BriefcaseBusiness,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -19,7 +20,7 @@ function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const menuButtonRef = useRef(null);
@@ -80,6 +81,7 @@ function DashboardLayout() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#app-content">Skip to content</a>
       {/* Mobile menu button */}
       <button
         ref={menuButtonRef}
@@ -105,6 +107,7 @@ function DashboardLayout() {
         {/* Logo */}
         <div className="sidebar__header">
           <Logo />
+          <span className="sidebar__workspace">Role workspace</span>
         </div>
 
         {/* Navigation */}
@@ -149,7 +152,7 @@ function DashboardLayout() {
             }
           >
             <BarChart3 size={17} />
-            <span>My Interviews</span>
+            <span>Interview History</span>
           </NavLink>
 
           <NavLink
@@ -166,19 +169,23 @@ function DashboardLayout() {
 
         {/* Logout */}
         <div className="sidebar__footer">
+          <div className="sidebar-account" aria-label={`Signed in as ${user?.email || 'PrepRole AI user'}`}>
+            <span className="sidebar-account__avatar"><BriefcaseBusiness size={15} /></span>
+            <span className="sidebar-account__copy"><strong>{user?.username || user?.name || 'Candidate'}</strong><small>{user?.email || 'Private workspace'}</small></span>
+          </div>
           <button
             type="button"
             className="sidebar-link logout-link"
             onClick={handleLogout}
           >
             <LogOut size={17} />
-            <span>Logout</span>
+            <span>Sign out</span>
           </button>
         </div>
       </aside>
 
       {/* Main application area */}
-      <main className="app-main">
+      <main className="app-main" id="app-content" tabIndex={-1}>
         <Outlet />
       </main>
 

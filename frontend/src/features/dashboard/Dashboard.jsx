@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Compass } from 'lucide-react';
 
 import WelcomeHeader from './components/WelcomeHeader';
 import DashboardStats from './components/DashboardStats';
@@ -10,8 +10,10 @@ import ErrorMessage from '../../components/common/ErrorMessage';
 import Button from '../../components/ui/Button';
 import { getDashboardStats, getRecentInterviews } from './dashboard.api';
 import { getApiErrorMessage, isCanceledRequest } from '../../services/apiError';
+import { useAuth } from '../../context/useAuth';
 
 function Dashboard() {
+  const { user } = useAuth();
   const [interviews, setInterviews] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,10 +61,10 @@ function Dashboard() {
       <div className="dashboard-content">
         <section className="dashboard-intro">
           <div>
-            <div className="dashboard-greeting"><span>Your AI interview assistant</span><Sparkles size={15} /></div>
-            <h1>Prepare smarter.<br /><span>Get hired faster.</span></h1>
+            <div className="dashboard-greeting"><Compass size={14} /><span>Role preparation workspace</span></div>
+            <h1>Welcome back, <span>{user?.username || user?.name || 'Candidate'}.</span></h1>
           </div>
-          <p className="dashboard-motivation">“Preparation today.<br />Confidence tomorrow.”</p>
+          <p className="dashboard-motivation">Review your progress or begin preparing for a new opportunity.</p>
         </section>
 
         <CreateInterviewBanner />

@@ -1,7 +1,7 @@
 import {
   ArrowRight,
   FileText,
-  Sparkles,
+  Target,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -29,24 +29,20 @@ function CreateInterviewBanner() {
       <div className="create-banner__content">
 
         <div className="create-banner__icon">
-          <Sparkles size={21} />
+          <Target size={21} />
         </div>
 
         <div>
           <span className="create-banner__eyebrow">
-            AI-powered preparation
+            Start a new preparation
           </span>
 
           <h2>
-            Turn your experience into
-            your next opportunity
+            Prepare for a new role
           </h2>
 
           <p>
-            Upload your resume, add a job
-            description, and let AI generate
-            a personalized interview
-            preparation report for you.
+            Add the target job and your resume to build a role-specific Interview Report.
           </p>
         </div>
 
@@ -60,7 +56,7 @@ function CreateInterviewBanner() {
         <FileText size={17} />
 
         <span>
-          Create New Interview
+          New Interview
         </span>
 
         <ArrowRight size={16} />

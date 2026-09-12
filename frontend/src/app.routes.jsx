@@ -6,8 +6,8 @@ import App from './App';
 import Home from './features/home/pages/Home';
 import NotFound from './features/home/pages/NotFound';
 
-import Login from './features/auth/pages/login';
-import Register from './features/auth/pages/register';
+import Login from './features/auth/pages/Login';
+import Register from './features/auth/pages/Register';
 
 import ProtectedRoute from './features/auth/components/ProtectedRoute';
 

@@ -173,12 +173,11 @@ function InterviewHistory() {
           </span>
 
           <h1>
-            My Interviews
+            Interview History
           </h1>
 
           <p>
-            View and manage all your
-            interview preparation reports.
+            Revisit your role preparation reports and continue where you left off.
           </p>
         </div>
 

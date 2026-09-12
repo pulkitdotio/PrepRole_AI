@@ -49,7 +49,7 @@ function AccountSettings() {
         <div>
           <span className="page-eyebrow">Account</span>
           <h1>Settings</h1>
-          <p>Manage the data associated with {user?.email || 'your PrepAI account'}.</p>
+          <p>Manage the data associated with {user?.email || 'your PrepRole AI account'}.</p>
         </div>
       </header>
 

@@ -41,6 +41,7 @@ function InterviewStepper({
           <div
             className="stepper-item"
             key={step.number}
+            aria-current={active ? 'step' : undefined}
           >
             <div
               className={[

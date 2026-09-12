@@ -177,7 +177,7 @@ function TailoredResume() {
 
           <div>
             <span className="page-eyebrow">
-              AI Resume Builder
+              Report companion
             </span>
 
             <h1>
@@ -222,7 +222,7 @@ function TailoredResume() {
             </h2>
 
             <p>
-              PrepAI uses your original
+              PrepRole AI uses your original
               resume, self-description, and
               target job description to create
               an ATS-friendly tailored resume.

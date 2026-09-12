@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import { FileText, RefreshCw, Trash2, Upload } from 'lucide-react';
 
 const MAX_FILE_SIZE = 3 * 1024 * 1024;
@@ -7,6 +7,7 @@ function ResumeUpload({ file, onChange, error, disabled = false }) {
   const inputId = useId();
   const helpId = `${inputId}-help`;
   const errorId = `${inputId}-error`;
+  const [dragging, setDragging] = useState(false);
 
   const chooseFile = (event) => {
     const selectedFile = event.target.files?.[0];
@@ -16,6 +17,7 @@ function ResumeUpload({ file, onChange, error, disabled = false }) {
 
   const handleDrop = (event) => {
     event.preventDefault();
+    setDragging(false);
     if (disabled) return;
     const droppedFile = event.dataTransfer.files?.[0];
     if (droppedFile) onChange(droppedFile);
@@ -26,7 +28,14 @@ function ResumeUpload({ file, onChange, error, disabled = false }) {
   return (
     <div className="resume-upload">
       {!file ? (
-        <label className={['resume-dropzone', disabled ? 'resume-dropzone--disabled' : ''].filter(Boolean).join(' ')} htmlFor={inputId} onDragOver={(event) => event.preventDefault()} onDrop={handleDrop}>
+        <label
+          className={['resume-dropzone', dragging ? 'resume-dropzone--dragging' : '', disabled ? 'resume-dropzone--disabled' : ''].filter(Boolean).join(' ')}
+          htmlFor={inputId}
+          onDragEnter={() => { if (!disabled) setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={handleDrop}
+        >
           <input
             id={inputId}
             className="visually-hidden"
@@ -34,6 +43,7 @@ function ResumeUpload({ file, onChange, error, disabled = false }) {
             accept="application/pdf,.pdf"
             onChange={chooseFile}
             aria-describedby={[helpId, error ? errorId : ''].filter(Boolean).join(' ')}
+            aria-invalid={Boolean(error)}
             disabled={disabled}
           />
           <div className="resume-dropzone__icon"><Upload size={24} aria-hidden="true" /></div>
@@ -58,6 +68,7 @@ function ResumeUpload({ file, onChange, error, disabled = false }) {
                 onChange={chooseFile}
                 aria-label="Replace resume"
                 aria-describedby={error ? errorId : undefined}
+                aria-invalid={Boolean(error)}
                 disabled={disabled}
               />
               <RefreshCw size={16} aria-hidden="true" />

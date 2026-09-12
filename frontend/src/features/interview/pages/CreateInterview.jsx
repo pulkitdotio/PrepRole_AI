@@ -263,18 +263,15 @@ function CreateInterview() {
           <div>
             <div className="page-eyebrow">
               <Sparkles size={13} />
-              AI Interview Preparation
+              Role Preparation
             </div>
 
             <h1>
-              Create New Interview
+              New Interview
             </h1>
 
             <p>
-              Provide your details and
-              let AI generate a personalized
-              interview preparation report
-              for you.
+              Add the role and your experience to create a focused Interview Report.
             </p>
           </div>
 
@@ -297,7 +294,7 @@ function CreateInterview() {
             <LoaderCircle size={18} className="spin" aria-hidden="true" />
             <div>
               <strong>{generationMessages[generationMessageIndex]}</strong>
-              <span>This can take a moment. Keep this page open while PrepAI works.</span>
+              <span>This can take a moment. Keep this page open while PrepRole AI works.</span>
             </div>
           </div>
         )}
@@ -326,8 +323,7 @@ function CreateInterview() {
                   </h2>
 
                   <p>
-                    Upload the resume you
-                    want AI to analyze.
+                    Add the PDF you want PrepRole AI to compare with the role.
                   </p>
                 </div>
               </div>

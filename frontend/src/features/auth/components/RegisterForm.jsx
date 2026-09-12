@@ -121,7 +121,7 @@ function RegisterForm() {
         label="Email"
         name="email"
         type="email"
-        placeholder="you@example.com"
+        placeholder="Enter your Email"
         value={form.email}
         onChange={handleChange}
         autoComplete="email"

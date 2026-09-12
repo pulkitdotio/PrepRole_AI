@@ -1,6 +1,6 @@
 import Spinner from '../ui/Spinner';
 
-function PageLoader({ message = 'Loading PrepAI…' }) {
+function PageLoader({ message = 'Loading PrepRole AI…' }) {
   return (
     <div className="page-loader" role="status" aria-live="polite">
       <Spinner size="large" />

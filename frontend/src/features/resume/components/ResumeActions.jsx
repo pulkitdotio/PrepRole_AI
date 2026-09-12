@@ -20,7 +20,7 @@ function ResumeActions({
     link.href = pdfUrl;
 
     link.download =
-      'PrepAI-Tailored-Resume.pdf';
+      'PrepRole-AI-Tailored-Resume.pdf';
 
     document.body.appendChild(
       link

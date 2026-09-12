@@ -1,205 +1,49 @@
 @use './variables' as *;
-@use './mixins' as *;
 
-/* A compact, shared interface layer for all product surfaces. */
-:focus-visible {
-  outline: 3px solid rgba($purple-light, 0.45);
-  outline-offset: 2px;
+.page-eyebrow,
+.section-eyebrow,
+.card-eyebrow {
+  color: #93a8ff;
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
 }
 
-.button {
-  min-height: 40px;
-  border: 1px solid transparent;
-  letter-spacing: -0.01em;
-
-  &--primary {
-    background: $purple;
-    box-shadow: none;
-
-    &:hover:not(:disabled) {
-      background: #8b5cf6;
-      box-shadow: none;
-    }
-  }
-
-  &--secondary {
-    background: rgba(255, 255, 255, 0.04);
-
-    &:hover:not(:disabled) {
-      border-color: $border-light;
-      background: rgba(255, 255, 255, 0.07);
-    }
-  }
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; margin-bottom: 28px;
+  h1 { margin-top: 7px; font-size: clamp(27px, 3vw, 36px); line-height: 1.08; letter-spacing: -0.045em; }
+  p { max-width: 620px; margin-top: 9px; color: $text-muted; font-size: 13px; line-height: 1.65; }
 }
 
-.form-label { font-size: 13px; }
-.form-input { height: 44px; font-size: 14px; }
-.form-textarea { min-height: 130px; font-size: 14px; }
-.field-error { font-size: 12px; }
 .page-error { margin-bottom: 18px; }
 .page-error--with-action,
 .dashboard-data-error {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
-
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px;
   .error-message { flex: 1; }
   .button { flex: 0 0 auto; }
 }
 
-.auth-page { background: $bg-primary; }
-.auth-hero {
-  background: #0c1222;
-
-  &::before, &::after { display: none; }
-  &__glow { display: none; }
-  &__copy h1 { font-size: clamp(42px, 4.6vw, 62px); line-height: 1.02; }
-}
-.auth-card { border-radius: $radius-md; background: $surface; box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2); }
-
-.app-shell,
-body {
-  background: $bg-primary;
+.back-link {
+  display: inline-flex; align-items: center; gap: 7px; color: $text-muted; font-size: 12px; font-weight: 580;
+  transition: color $transition;
+  &:hover { color: $text-primary; }
 }
 
-.sidebar {
-  background: #0a0f1c;
-
-  &__header { height: 68px; }
-  &__nav { padding-top: 22px; }
+.account-settings-page { width: min(900px, calc(100% - 64px)); margin: 0 auto; padding: 48px 0 72px; }
+.danger-zone {
+  display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 24px 0;
+  border-top: 1px solid rgba($red, 0.24); border-bottom: 1px solid rgba($red, 0.12);
+  h2 { margin: 7px 0 8px; font-size: 18px; letter-spacing: -0.02em; }
+  p { max-width: 620px; color: $text-muted; font-size: 12px; line-height: 1.65; }
 }
-
-.sidebar-link {
-  min-height: 42px;
-  font-size: 13px;
-
-  &--active {
-    background: rgba($purple-light, 0.16);
-    box-shadow: inset 3px 0 0 $purple-light;
-  }
-}
-
-.dashboard-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  height: 68px;
-  padding: 0 32px;
-  background: rgba(7, 11, 23, 0.92);
-
-  &__context {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-
-    span { color: $text-muted; font-size: 11px; }
-    strong { color: $text-primary; font-size: 14px; font-weight: 600; }
-  }
-}
-
-.user-menu { cursor: default; }
-.dashboard-content { max-width: 1240px; padding: 40px 32px 64px; }
-.dashboard-greeting { font-size: 12px; }
-.dashboard-motivation { font-size: 13px; }
-
-.create-banner {
-  min-height: 0;
-  border-radius: $radius-md;
-  background: #18133a;
-  box-shadow: none;
-
-  &__orb { display: none; }
-  &__eyebrow { font-size: 10px; }
-  h2 { font-size: 18px; }
-  p { font-size: 12px; }
-}
-
-.stat-card {
-  min-height: 104px;
-  background: $surface;
-  box-shadow: none;
-
-  &:hover { transform: none; box-shadow: none; }
-  &__content span { font-size: 12px; }
-}
-
-.section-eyebrow, .card-eyebrow, .page-eyebrow { font-size: 10px; }
-.section-heading h2 { font-size: 19px; }
-.section-link { min-height: 36px; font-size: 12px; }
-.interview-list, .interview-card, .history-card, .report-score-card, .skills-overview-card, .insight-card, .question-card, .skill-gap-card, .plan-card, .resume-info-card { background: $surface; }
-.interview-row { min-height: 82px; }
-.interview-row__main strong, .history-card__main h3 { font-size: 14px; }
-.interview-meta, .history-card__meta { font-size: 11px; }
-
-.interview-page__topbar { padding-top: 28px; }
-.interview-container { max-width: 980px; padding-top: 30px; }
-.interview-heading p, .page-header p { font-size: 13px; }
-.interview-card { box-shadow: none; }
-.form-section-heading h2 { font-size: 17px; }
-.form-section-heading p, .form-info-box p, .resume-tip { font-size: 12px; }
-.review-item span { font-size: 10px; }
-.review-item strong, .review-item p { font-size: 13px; }
-
-.history-page { max-width: 1180px; padding: 40px 32px 64px; }
-.page-header h1 { font-size: clamp(28px, 3vw, 34px); }
-.history-search { height: 44px; }
-.history-search input { font-size: 14px; }
-.history-card { min-height: 84px; }
-.history-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 64px 20px; }
-.history-empty__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: rgba($purple-light, .12); color: #c4b5fd; }
-.history-empty p { margin: 0; }
-
-.report-header { padding: 26px 32px 22px; }
-.report-tabs { padding: 0 32px; }
-.report-tab { min-height: 48px; padding: 0 15px; font-size: 12px; }
-.report-content { max-width: 1200px; padding: 32px; }
-.report-score-card, .skills-overview-card { min-height: 200px; }
-.report-score-card h2, .skills-overview-card h2 { font-size: 17px; }
-.report-score-card p, .report-section__heading p { font-size: 12px; }
-.question-card__header { min-height: 68px; }
-.question-card__question h3, .skill-gap-card__main h3, .plan-content h3 { font-size: 13px; }
-.question-detail p, .skill-gap-card__main p, .plan-content li { font-size: 12px; }
-.question-card,
-.question-detail,
-.review-item,
-.skill-gap-card,
-.plan-content,
-.resume-info-card,
-.report-content { overflow-wrap: anywhere; }
-.report-tab { flex: 0 0 auto; }
-.not-found__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-
-.resume-page__header { padding: 26px 32px 22px; }
-.resume-layout { max-width: 1180px; grid-template-columns: 280px minmax(0, 1fr); padding: 0 32px; }
-.resume-info-card h2 { font-size: 16px; }
-.resume-info-card p, .resume-info-card li { font-size: 12px; }
-
-@media (max-width: 800px) {
-  .dashboard-topbar { padding-left: 66px; padding-right: 18px; }
-  .dashboard-content, .history-page { padding: 28px 20px 48px; }
-  .report-header, .resume-page__header { padding-left: 20px; padding-right: 20px; }
-  .report-tabs, .report-content, .resume-layout { padding-left: 20px; padding-right: 20px; }
-}
+.confirm-dialog__field { margin-top: 18px; }
+.not-found__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 @media (max-width: 700px) {
-  .interview-container, .history-page, .report-content { padding-left: 16px; padding-right: 16px; }
-  .dashboard-content { padding: 26px 16px 44px; }
-  .dashboard-topbar__context { display: none; }
-  .dashboard-topbar { justify-content: flex-end; }
-  .user-menu__info { display: none; }
-  .create-banner { padding: 22px 20px; }
-  .create-banner h2 { font-size: 17px; }
-  .resume-page__header, .report-header, .report-tabs, .resume-layout { padding-left: 16px; padding-right: 16px; }
-  .page-error--with-action,
-  .dashboard-data-error { align-items: stretch; flex-direction: column; }
-  .interview-actions { flex-wrap: wrap; }
-  .interview-actions .button { min-width: min(100%, 140px); }
-  .resume-file { align-items: flex-start; flex-wrap: wrap; }
-  .resume-file__actions { width: 100%; justify-content: flex-end; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  .page-header { align-items: flex-start; flex-direction: column; }
+  .page-header .button { width: 100%; }
+  .account-settings-page { width: calc(100% - 32px); padding: 34px 0 54px; }
+  .danger-zone { align-items: flex-start; flex-direction: column; }
+  .page-error--with-action, .dashboard-data-error { align-items: stretch; flex-direction: column; }
 }

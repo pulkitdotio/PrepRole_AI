@@ -1,37 +1,30 @@
 @use './variables' as *;
 
 @mixin glass-card {
-  background: rgba(17, 26, 45, 0.78);
-
+  background: rgba(18, 24, 33, 0.84);
   border: 1px solid $border;
-
   box-shadow: $shadow-card;
-
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
 }
 
 @mixin gradient-text {
-  background: linear-gradient(
-    100deg,
-    $purple-light,
-    $purple-bright
-  );
-
+  background: linear-gradient(105deg, #f5f7ff 10%, #a7b8ff 55%, #8bd8d4 110%);
   -webkit-background-clip: text;
   background-clip: text;
-
   color: transparent;
 }
 
 @mixin focus-ring {
   outline: none;
+  border-color: rgba($focus, 0.86);
+  box-shadow: 0 0 0 3px rgba($focus, 0.16);
+}
 
-  border-color: rgba(
-    $purple-light,
-    0.8
-  );
+@mixin page-shell {
+  width: min($page-width, calc(100% - 64px));
+  margin-inline: auto;
 
-  box-shadow:
-    0 0 0 3px
-    rgba($purple-light, 0.13);
+  @media (max-width: 700px) {
+    width: calc(100% - 32px);
+  }
 }

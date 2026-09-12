@@ -12,7 +12,7 @@ function ComingSoon({ title }) {
 
       <p>
         This section will be implemented in
-        Phase 2 of PrepAI.
+        Part of the PrepRole AI roadmap.
       </p>
 
       <Link

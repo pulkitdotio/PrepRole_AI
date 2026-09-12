@@ -11,7 +11,7 @@ class AppErrorBoundary extends Component {
   }
 
   componentDidCatch(error) {
-    console.error('PrepAI could not render the current view.', error);
+    console.error('PrepRole AI could not render the current view.', error);
   }
 
   render() {
@@ -19,7 +19,7 @@ class AppErrorBoundary extends Component {
       return (
         <main className="app-error-boundary">
           <p className="page-eyebrow">Something went wrong</p>
-          <h1>PrepAI couldn’t display this page.</h1>
+          <h1>PrepRole AI couldn’t display this page.</h1>
           <p>Reload the page to try again, or return to the public homepage.</p>
           <div className="app-error-boundary__actions">
             <button type="button" className="button button--primary" onClick={() => window.location.reload()}>

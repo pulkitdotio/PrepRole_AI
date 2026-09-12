@@ -6,7 +6,7 @@ import { generationMessages, nextGenerationMessage } from '../features/interview
 test('API errors preserve safe backend messages and clarify limits/network failures', () => {
   assert.equal(getApiErrorMessage({ response: { data: { message: 'Invalid request' } } }, 'Fallback'), 'Invalid request');
   assert.match(getApiErrorMessage({ response: { status: 429, data: {} } }, 'Fallback'), /generation limit/);
-  assert.match(getApiErrorMessage({ isAxiosError: true }, 'Fallback'), /connect to PrepAI/);
+  assert.match(getApiErrorMessage({ isAxiosError: true }, 'Fallback'), /connect to PrepRole AI/);
   assert.equal(getApiErrorMessage({ response: { status: 500, data: {} } }, 'Fallback'), 'Fallback');
   assert.equal(isCanceledRequest({ code: 'ERR_CANCELED' }), true);
   assert.equal(isCanceledRequest(new Error('failure')), false);

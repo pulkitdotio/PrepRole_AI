@@ -6,21 +6,18 @@ import App from './App';
 import Home from './features/home/pages/Home';
 import NotFound from './features/home/pages/NotFound';
 
-import Login from './features/auth/pages/Login';
-import Register from './features/auth/pages/Register';
-
 import ProtectedRoute from './features/auth/components/ProtectedRoute';
-
-import DashboardLayout from './layouts/DashboardLayout';
-
-import Dashboard from './features/dashboard/Dashboard';
-
-import CreateInterview from './features/interview/pages/CreateInterview';
-import InterviewHistory from './features/interview/pages/InterviewHistory';
-import InterviewReport from './features/interview/pages/InterviewReport';
-
-import TailoredResume from './features/resume/pages/TailoredResume';
-import AccountSettings from './features/auth/pages/AccountSettings';
+import {
+  AccountSettings,
+  CreateInterview,
+  Dashboard,
+  DashboardLayout,
+  InterviewHistory,
+  InterviewReport,
+  Login,
+  Register,
+  TailoredResume,
+} from './lazyRoutes';
 
 export const router =
   createBrowserRouter([

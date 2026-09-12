@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router';
 import Logo from '../../../components/common/Logo';
+import ScrollReveal from '../../../components/common/ScrollReveal';
 import AuthLink from '../../auth/components/AuthLink';
 import PublicHeader from '../components/PublicHeader';
 import RoleJourney from '../components/RoleJourney';
@@ -54,30 +55,30 @@ function Home() {
         </section>
 
         <section id="how-it-works" className="home-section public-container" aria-labelledby="how-title">
-          <div className="home-section__heading home-section__heading--split">
+          <ScrollReveal className="home-section__heading home-section__heading--split">
             <div><p className="home-eyebrow">A focused workflow</p><h2 id="how-title">From opportunity to action plan.</h2></div>
             <p>Three clear steps. Your experience stays at the center.</p>
-          </div>
+          </ScrollReveal>
           <ol className="home-workflow">
-            {workflow.map(({ icon: Icon, number, title, description }) => (
-              <li key={title}>
+            {workflow.map(({ icon: Icon, number, title, description }, index) => (
+              <ScrollReveal as="li" delay={index * 70} key={title}>
                 <span className="workflow-number">{number}</span>
                 <span className="home-icon"><Icon size={19} aria-hidden="true" /></span>
                 <h3>{title}</h3><p>{description}</p>
-              </li>
+              </ScrollReveal>
             ))}
           </ol>
         </section>
 
         <section id="tools" className="home-section home-intelligence" aria-labelledby="intelligence-title">
           <div className="public-container home-intelligence__inner">
-            <div className="home-intelligence__copy">
+            <ScrollReveal className="home-intelligence__copy">
               <p className="home-eyebrow">Interview intelligence</p>
               <h2 id="intelligence-title">Know where you stand. Know what to do next.</h2>
               <p>PrepRole AI compares the role with your actual background and organizes the result into a report you can work through.</p>
               <AuthLink to="/interviews/new" className="section-link">Create an Interview Report <ArrowRight size={15} /></AuthLink>
-            </div>
-            <div className="intelligence-panel">
+            </ScrollReveal>
+            <ScrollReveal className="intelligence-panel" delay={90}>
               <div className="intelligence-panel__header"><BarChart3 size={17} /><span>Role preparation snapshot</span></div>
               {reportDetails.map(({ icon: Icon, label, value }) => (
                 <div className="intelligence-row" key={label}>
@@ -86,30 +87,30 @@ function Home() {
                   <ArrowRight size={15} aria-hidden="true" />
                 </div>
               ))}
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
         <section className="home-section public-container resume-feature" aria-labelledby="resume-title">
-          <div className="resume-feature__visual" aria-hidden="true">
+          <ScrollReveal className="resume-feature__visual" aria-hidden="true">
             <div className="resume-sheet">
               <span className="resume-sheet__name" /><span className="resume-sheet__role" />
               <i /><i /><i /><i /><i />
             </div>
             <div className="resume-signal"><Target size={17} /><span>Aligned to your target role</span></div>
-          </div>
-          <div className="resume-feature__copy">
+          </ScrollReveal>
+          <ScrollReveal className="resume-feature__copy" delay={90}>
             <p className="home-eyebrow">Tailored Resume</p>
             <h2 id="resume-title">Carry the same role context into your resume.</h2>
             <p>Generate an ATS-friendly resume from the Interview Report using your original resume, self-description, and target job—without invented experience.</p>
             <AuthLink to="/interviews/new" className="button button--secondary button--medium">Prepare and tailor <ArrowRight size={15} /></AuthLink>
-          </div>
+          </ScrollReveal>
         </section>
 
-        <section className="home-final public-container" aria-labelledby="final-title">
+        <ScrollReveal as="section" className="home-final public-container" aria-labelledby="final-title">
           <div><p className="home-eyebrow">Your next role deserves focus</p><h2 id="final-title">Bring the opportunity. Leave with a plan.</h2></div>
           <AuthLink to="/interviews/new" className="button button--light button--large">Start preparing <ArrowRight size={16} /></AuthLink>
-        </section>
+        </ScrollReveal>
       </main>
       <footer className="public-container public-footer"><Logo /><p>Role-specific preparation, built around you.</p><Link to="/#how-it-works">How it works</Link></footer>
     </div>

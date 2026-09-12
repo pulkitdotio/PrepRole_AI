@@ -4,6 +4,7 @@ import {
   Gauge,
   Trophy,
 } from 'lucide-react';
+import ScrollReveal from '../../../components/common/ScrollReveal';
 
 function DashboardStats({
   stats: dashboardStats,
@@ -48,12 +49,14 @@ function DashboardStats({
       className="stats-grid"
       aria-label="Interview statistics"
     >
-      {stats.map((stat) => {
+      {stats.map((stat, index) => {
         const Icon = stat.icon;
 
         return (
-          <article
+          <ScrollReveal
+            as="article"
             className="stat-card"
+            delay={index * 70}
             key={stat.label}
           >
             <div
@@ -74,7 +77,7 @@ function DashboardStats({
                 {stat.value}
               </strong>
             </div>
-          </article>
+          </ScrollReveal>
         );
       })}
     </section>

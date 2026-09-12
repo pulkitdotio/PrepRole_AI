@@ -7,6 +7,7 @@ import RecentInterviews from './components/RecentInterviews';
 import CreateInterviewBanner from './components/CreateInterviewBanner';
 import PageLoader from '../../components/common/PageLoader';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import ScrollReveal from '../../components/common/ScrollReveal';
 import Button from '../../components/ui/Button';
 import { getDashboardStats, getRecentInterviews } from './dashboard.api';
 import { getApiErrorMessage, isCanceledRequest } from '../../services/apiError';
@@ -59,13 +60,13 @@ function Dashboard() {
     <div className="dashboard-page">
       <WelcomeHeader />
       <div className="dashboard-content">
-        <section className="dashboard-intro">
+        <ScrollReveal as="section" className="dashboard-intro">
           <div>
             <div className="dashboard-greeting"><Compass size={14} /><span>Role preparation workspace</span></div>
             <h1>Welcome back, <span>{user?.username || user?.name || 'Candidate'}.</span></h1>
           </div>
           <p className="dashboard-motivation">Review your progress or begin preparing for a new opportunity.</p>
-        </section>
+        </ScrollReveal>
 
         <CreateInterviewBanner />
         {statsError ? (

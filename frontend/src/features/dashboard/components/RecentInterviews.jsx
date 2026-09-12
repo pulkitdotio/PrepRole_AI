@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 
 import Badge from '../../../components/ui/Badge';
+import ScrollReveal from '../../../components/common/ScrollReveal';
 
 function formatDate(date) {
   if (!date) {
@@ -79,7 +80,7 @@ function RecentInterviews({
   };
 
   return (
-    <section className="dashboard-section">
+    <ScrollReveal as="section" className="dashboard-section">
 
       {/* Section heading */}
       <div className="section-heading">
@@ -225,7 +226,7 @@ function RecentInterviews({
         )}
 
       </div>
-    </section>
+    </ScrollReveal>
   );
 }
 

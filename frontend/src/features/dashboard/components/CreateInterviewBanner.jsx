@@ -5,10 +5,11 @@ import {
 } from 'lucide-react';
 
 import { Link } from 'react-router';
+import ScrollReveal from '../../../components/common/ScrollReveal';
 
 function CreateInterviewBanner() {
   return (
-    <section className="create-banner">
+    <ScrollReveal as="section" className="create-banner">
 
       {/* Decorative elements */}
       <div
@@ -62,7 +63,7 @@ function CreateInterviewBanner() {
         <ArrowRight size={16} />
       </Link>
 
-    </section>
+    </ScrollReveal>
   );
 }
 

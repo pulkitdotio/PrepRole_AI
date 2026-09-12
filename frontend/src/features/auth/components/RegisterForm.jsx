@@ -109,7 +109,7 @@ function RegisterForm() {
         label="Username"
         name="username"
         type="text"
-        placeholder="Alex Johnson"
+        placeholder="Enter your username"
         value={form.username}
         onChange={handleChange}
         autoComplete="username"

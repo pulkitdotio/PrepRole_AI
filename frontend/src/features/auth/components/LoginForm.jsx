@@ -73,7 +73,7 @@ function LoginForm() {
         label="Email"
         name="email"
         type="email"
-        placeholder="you@example.com"
+        placeholder="Enter your email"
         value={form.email}
         onChange={handleChange}
         autoComplete="email"

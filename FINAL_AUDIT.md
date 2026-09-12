@@ -18,6 +18,7 @@ This document records the local code audit completed after Phases 1–7. It is a
 - Password hashes use bcrypt cost 12, are `select: false` by default, and are explicitly selected only for credential checks. Password input is not trimmed or logged. Login does not distinguish an unknown email from an incorrect password.
 - PDF upload checks MIME metadata, a PDF signature, byte/page/text/time bounds, disables PDF.js eval support, and does not use user-controlled paths or URLs.
 - AI requests use an allowlisted data envelope, bounded attempts and timeouts, no tools, strict response schemas, and generic client errors. Model text never controls ownership, markup, CSS, filesystem paths, or network destinations.
+- Gemini 3.5 Flash-Lite is the documented default model; deployments can deliberately select another compatible model through `GEMINI_MODEL`.
 - PDF rendering keeps the Chromium sandbox enabled, disables page JavaScript and service workers, enables offline mode, aborts every request, rejects horizontal overflow, sets explicit timeouts, and closes browser resources on success or failure.
 
 ## Resume output review

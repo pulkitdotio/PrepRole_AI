@@ -9,6 +9,8 @@ const { renderResumePDF } = require('./resumePdf.service');
 // User fields and EVERY model response are untrusted. No model text enters instructions,
 // logs, ownership fields, HTML markup, CSS, code, filesystem paths or network destinations.
 let ai;
+const DEFAULT_MODEL = 'gemini-3.5-flash-lite';
+
 function getClient() {
     if (!process.env.GOOGLE_API_KEY) throw new ContentError(503, 'AI generation is temporarily unavailable');
     ai ??= new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
@@ -40,7 +42,8 @@ async function generateStructured(operation, input, {
         let response;
         try {
             response = await provider.models.generateContent({
-                model: 'gemini-3.5-flash', contents: prompt.contents,
+                model: process.env.GEMINI_MODEL?.trim() || DEFAULT_MODEL,
+                contents: prompt.contents,
                 config: {
                     systemInstruction: prompt.systemInstruction + (invalidOutput ? '\nPrevious output did not match the schema. Regenerate valid JSON only.' : ''),
                     responseMimeType: 'application/json', responseJsonSchema: responseJsonSchema(schema),

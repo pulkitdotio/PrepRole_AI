@@ -153,6 +153,7 @@ test('AI retry budget includes invalid outputs and temporary API failures; no ra
     assert.deepEqual(await generateStructured('interview', fixture.profile, { client, sleep: async () => {} }), fixture.report());
     assert.equal(calls, L.aiAttempts);
     for (const request of requests) {
+        assert.equal(request.model, 'gemini-3.5-flash-lite');
         assert.equal(request.config.httpOptions.retryOptions.attempts, 1);
         assert.equal(request.config.maxOutputTokens, L.aiOutputTokens);
         assert.equal(request.config.tools, undefined);

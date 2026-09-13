@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 
-export const Login = lazy(() => import('./features/auth/pages/Login'));
-export const Register = lazy(() => import('./features/auth/pages/Register'));
+export const Login = lazy(() => import('./features/auth/pages/Login.jsx'));
+export const Register = lazy(() => import('./features/auth/pages/Register.jsx'));
 export const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
 export const Dashboard = lazy(() => import('./features/dashboard/Dashboard'));
 export const CreateInterview = lazy(() => import('./features/interview/pages/CreateInterview'));

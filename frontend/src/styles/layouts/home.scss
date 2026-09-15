@@ -1,7 +1,7 @@
 @use '../variables' as *;
 
 .public-container { width: min(1160px, calc(100% - 64px)); margin-inline: auto; }
-.public-page { min-height: 100vh; color: $text-primary; p { color: $text-secondary; line-height: 1.7; } }
+.public-page { --font-display: 'Sentient', Georgia, 'Times New Roman', serif; min-height: 100vh; color: $text-primary; p { color: $text-secondary; line-height: 1.7; } }
 .skip-link {
   position: fixed; top: 8px; left: 16px; z-index: 200; padding: 11px 14px; border: 1px solid $border-light;
   border-radius: $radius-sm; background: $surface; transform: translateY(-160%);
@@ -33,8 +33,9 @@
   &::before { content: ''; width: 20px; height: 1px; background: #7891f4; }
 }
 .home-hero h1 {
-  max-width: 650px; font-size: clamp(43px, 5vw, 65px); line-height: 1.03; letter-spacing: -0.058em;
-  span { color: #8794a6; }
+  max-width: 650px; font-family: var(--font-display); font-size: clamp(42px, 4.5vw, 56px);
+  font-weight: 500; line-height: 1.09; letter-spacing: -0.032em;
+  span { display: block; color: #8794a6; }
 }
 .home-hero__description { max-width: 590px; margin-top: 24px; font-size: 15px; }
 .home-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 29px; }
@@ -105,7 +106,7 @@
 @keyframes journey-destination-in { to { opacity: 1; transform: scale(1); } }
 
 .home-section { padding-block: 88px; scroll-margin-top: 32px; }
-.home-section__heading { max-width: 650px; margin-bottom: 36px; h2 { font-size: clamp(27px, 3.4vw, 42px); line-height: 1.12; letter-spacing: -0.045em; } > p:last-child { margin-top: 12px; font-size: 14px; } }
+.home-section__heading { max-width: 650px; margin-bottom: 36px; h2 { font-family: var(--font-display); font-size: clamp(27px, 3.4vw, 42px); font-weight: 500; line-height: 1.18; letter-spacing: -0.025em; } > p:last-child { margin-top: 12px; font-size: 14px; } }
 .home-section__heading--split { display: flex; align-items: flex-end; justify-content: space-between; max-width: none; gap: 48px; > p { max-width: 390px; margin: 0 0 3px; } }
 .home-workflow { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0; margin: 0; border-top: 1px solid $border; border-bottom: 1px solid $border; list-style: none; }
 .home-workflow li { position: relative; padding: 31px 30px 34px; border-left: 1px solid $border; &:first-child { border-left: 0; } h3 { margin: 25px 0 9px; font-size: 16px; } p { font-size: 12px; } }
@@ -114,7 +115,7 @@
 
 .home-intelligence { border-block: 1px solid $border; background: linear-gradient(180deg, rgba(17, 23, 32, 0.55), rgba(10, 14, 20, 0.7)); }
 .home-intelligence__inner { display: grid; grid-template-columns: 0.82fr 1.18fr; align-items: center; gap: 90px; }
-.home-intelligence__copy { h2 { font-size: clamp(28px, 3.5vw, 43px); line-height: 1.12; letter-spacing: -0.045em; } > p:not(.home-eyebrow) { max-width: 510px; margin: 20px 0 26px; font-size: 14px; } }
+.home-intelligence__copy { h2 { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 43px); font-weight: 500; line-height: 1.18; letter-spacing: -0.025em; } > p:not(.home-eyebrow) { max-width: 510px; margin: 20px 0 26px; font-size: 14px; } }
 .section-link { display: inline-flex; align-items: center; gap: 7px; color: #9eb0ff; font-size: 12px; font-weight: 650; &:hover { color: #c3ceff; } }
 .intelligence-panel { border: 1px solid $border-light; border-radius: $radius-lg; background: #0e141c; box-shadow: $shadow-card; }
 .intelligence-panel__header { display: flex; align-items: center; gap: 9px; padding: 15px 18px; border-bottom: 1px solid $border; color: $text-secondary; font-size: 11px; svg { color: #9bafff; } }
@@ -125,9 +126,9 @@
 .resume-feature__visual { position: relative; min-height: 420px; display: grid; place-items: center; overflow: hidden; border: 1px solid $border; border-radius: $radius-lg; background: radial-gradient(circle at 50% 30%, rgba($accent, 0.14), transparent 50%), #0d1219; }
 .resume-sheet { width: 238px; height: 306px; padding: 28px; border-radius: 4px; background: #e9edf2; box-shadow: 0 28px 70px rgba(0, 0, 0, 0.42); transform: rotate(-2deg); span, i { display: block; border-radius: 2px; background: #aeb8c4; } .resume-sheet__name { width: 58%; height: 9px; background: #283342; } .resume-sheet__role { width: 40%; height: 5px; margin-top: 7px; background: #6c7c8e; } i { height: 4px; margin-top: 28px; &:nth-of-type(2) { width: 88%; margin-top: 8px; } &:nth-of-type(3) { width: 73%; margin-top: 8px; } &:nth-of-type(4) { width: 84%; } &:nth-of-type(5) { width: 66%; margin-top: 8px; } } }
 .resume-signal { position: absolute; right: 28px; bottom: 42px; display: flex; align-items: center; gap: 9px; padding: 11px 13px; border: 1px solid rgba($green, 0.22); border-radius: 9px; background: rgba(13, 22, 26, 0.94); color: #8be5c2; font-size: 10px; box-shadow: $shadow-card; }
-.resume-feature__copy { h2 { font-size: clamp(28px, 3.5vw, 43px); line-height: 1.12; letter-spacing: -0.045em; } > p:not(.home-eyebrow) { margin: 20px 0 26px; font-size: 14px; } }
+.resume-feature__copy { h2 { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 43px); font-weight: 500; line-height: 1.18; letter-spacing: -0.025em; } > p:not(.home-eyebrow) { margin: 20px 0 26px; font-size: 14px; } }
 
-.home-final { display: flex; align-items: center; justify-content: space-between; gap: 34px; margin-block: 22px 70px; padding: 36px 38px; border: 1px solid rgba($accent, 0.25); border-radius: $radius-lg; background: linear-gradient(115deg, #17233a, #192039 60%, #16252d); box-shadow: inset 0 1px rgba(255, 255, 255, 0.05); h2 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -0.04em; } .home-eyebrow { color: #b1c0ff !important; } .button { flex: 0 0 auto; } }
+.home-final { display: flex; align-items: center; justify-content: space-between; gap: 34px; margin-block: 22px 70px; padding: 36px 38px; border: 1px solid rgba($accent, 0.25); border-radius: $radius-lg; background: linear-gradient(115deg, #17233a, #192039 60%, #16252d); box-shadow: inset 0 1px rgba(255, 255, 255, 0.05); h2 { font-family: var(--font-display); font-size: clamp(24px, 3vw, 34px); font-weight: 500; line-height: 1.18; letter-spacing: -0.025em; } .home-eyebrow { color: #b1c0ff !important; } .button { flex: 0 0 auto; } }
 .public-footer { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding-block: 25px; border-top: 1px solid $border; color: $text-muted; font-size: 11px; p { color: $text-muted; } a:hover { color: $text-primary; } }
 .not-found { min-height: calc(100vh - 73px); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 18px; h1 { max-width: 650px; font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.05em; } > p:not(.home-eyebrow) { max-width: 560px; } }
 
@@ -153,7 +154,8 @@
   .public-header__account .button--secondary { display: none; }
   .public-header__account .button { min-height: 36px; padding-inline: 12px; font-size: 11px; }
   .home-hero { gap: 42px; padding-block: 52px 58px; }
-  .home-hero h1 { font-size: clamp(39px, 12vw, 54px); }
+  .home-hero h1 { font-size: clamp(36px, 10vw, 50px); line-height: 1.12; }
+  .home-hero h1 span { display: inline; }
   .home-hero__description { font-size: 14px; }
   .role-journey { aspect-ratio: 1.28; }
   .home-section { padding-block: 64px; }

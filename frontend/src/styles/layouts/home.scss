@@ -19,6 +19,16 @@
 }
 .public-header__account { margin-left: auto; }
 
+.home-page {
+  --home-enter-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  > .public-header {
+    opacity: 0;
+    transform: translate3d(0, -18px, 0);
+    animation: home-enter-down 620ms var(--home-enter-ease) 40ms forwards;
+  }
+}
+
 .home-hero {
   position: relative; display: grid; grid-template-columns: minmax(0, 0.94fr) minmax(440px, 1.06fr);
   align-items: center; gap: 64px; min-height: 690px; padding-block: 76px 88px;
@@ -32,18 +42,51 @@
   font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
   &::before { content: ''; width: 20px; height: 1px; background: #7891f4; }
 }
-.home-hero h1 {
+.home-title {
   max-width: 650px; font-family: var(--font-display); font-size: clamp(42px, 4.5vw, 56px);
   font-weight: 500; line-height: 1.09; letter-spacing: -0.032em;
-  span { display: block; color: #8794a6; }
 }
+.home-title__line { display: block; overflow: hidden; }
+.home-title__line--muted { color: #8794a6; }
+.home-title__text { display: block; }
 .home-hero__description { max-width: 590px; margin-top: 24px; font-size: 15px; }
 .home-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 29px; }
 .home-trust-note { display: flex; align-items: center; gap: 8px; margin-top: 18px; color: $text-muted; font-size: 11px; svg { color: $green; } }
 
+.home-page {
+  .home-hero__glow {
+    opacity: 0;
+    animation: home-glow-in 1s var(--home-enter-ease) 100ms forwards;
+  }
+  .home-hero__copy > .home-eyebrow,
+  .home-hero__description,
+  .home-trust-note,
+  .home-actions > .button {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    animation: home-enter-up 640ms var(--home-enter-ease) forwards;
+  }
+  .home-hero__copy > .home-eyebrow { animation-delay: 120ms; }
+  .home-title__text {
+    transform: translate3d(0, 112%, 0);
+    animation: home-title-in 720ms var(--home-enter-ease) forwards;
+  }
+  .home-title__line:first-child .home-title__text { animation-delay: 190ms; }
+  .home-title__line:nth-child(2) .home-title__text { animation-delay: 280ms; }
+  .home-hero__description { animation-delay: 380ms; }
+  .home-actions > .button:first-child { animation-delay: 470ms; }
+  .home-actions > .button:nth-child(2) { animation-delay: 540ms; }
+  .home-trust-note { animation-delay: 640ms; }
+  .role-journey {
+    opacity: 0;
+    animation: home-journey-in 850ms var(--home-enter-ease) 260ms forwards;
+  }
+}
+
 .role-journey {
+  --journey-resting-transform: perspective(1100px) rotateY(-2deg) rotateX(1deg);
   position: relative; min-width: 0; aspect-ratio: 1.08; isolation: isolate;
-  transform: perspective(1100px) rotateY(-2deg) rotateX(1deg);
+  transform: var(--journey-resting-transform);
 }
 .role-journey::before {
   content: ''; position: absolute; inset: 8% 3% 4% 5%; z-index: -2; border: 1px solid rgba($accent, 0.08);
@@ -104,6 +147,14 @@
 @keyframes journey-travel { to { stroke-dashoffset: -466; } }
 @keyframes journey-checkpoint-in { to { opacity: 1; transform: translateY(0); } }
 @keyframes journey-destination-in { to { opacity: 1; transform: scale(1); } }
+@keyframes home-enter-down { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes home-enter-up { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes home-title-in { to { transform: translate3d(0, 0, 0); } }
+@keyframes home-glow-in { to { opacity: 1; } }
+@keyframes home-journey-in {
+  from { opacity: 0; transform: translate3d(34px, 8px, 0) scale(0.975) var(--journey-resting-transform); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1) var(--journey-resting-transform); }
+}
 
 .home-section { padding-block: 88px; scroll-margin-top: 32px; }
 .home-section__heading { max-width: 650px; margin-bottom: 36px; h2 { font-family: var(--font-display); font-size: clamp(27px, 3.4vw, 42px); font-weight: 500; line-height: 1.18; letter-spacing: -0.025em; } > p:last-child { margin-top: 12px; font-size: 14px; } }
@@ -142,7 +193,7 @@
   .public-header__product { display: none; }
   .home-hero__glow { display: none; }
   .home-hero { grid-template-columns: 1fr; min-height: 0; padding-block: 64px 70px; }
-  .role-journey { width: min(610px, 100%); margin-inline: auto; aspect-ratio: 1.35; transform: none; }
+  .role-journey { --journey-resting-transform: translateZ(0); width: min(610px, 100%); margin-inline: auto; aspect-ratio: 1.35; }
   .home-section__heading--split { align-items: flex-start; flex-direction: column; gap: 10px; }
   .home-intelligence__inner, .resume-feature { grid-template-columns: 1fr; }
   .resume-feature__visual { order: 2; min-height: 360px; }
@@ -154,8 +205,7 @@
   .public-header__account .button--secondary { display: none; }
   .public-header__account .button { min-height: 36px; padding-inline: 12px; font-size: 11px; }
   .home-hero { gap: 42px; padding-block: 52px 58px; }
-  .home-hero h1 { font-size: clamp(36px, 10vw, 50px); line-height: 1.12; }
-  .home-hero h1 span { display: inline; }
+  .home-title { font-size: clamp(36px, 10vw, 50px); line-height: 1.12; }
   .home-hero__description { font-size: 14px; }
   .role-journey { aspect-ratio: 1.28; }
   .home-section { padding-block: 64px; }

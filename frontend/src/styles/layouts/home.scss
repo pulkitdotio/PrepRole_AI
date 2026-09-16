@@ -78,8 +78,17 @@
   .home-actions > .button:nth-child(2) { animation-delay: 540ms; }
   .home-trust-note { animation-delay: 640ms; }
   .role-journey {
+    --journey-entry-x: 34px;
+    --journey-entry-y: 8px;
     opacity: 0;
     animation: home-journey-in 850ms var(--home-enter-ease) 260ms forwards;
+  }
+
+  > .public-header:focus-within,
+  .home-actions:focus-within > .button {
+    opacity: 1;
+    transform: none;
+    animation: none;
   }
 }
 
@@ -152,7 +161,7 @@
 @keyframes home-title-in { to { transform: translate3d(0, 0, 0); } }
 @keyframes home-glow-in { to { opacity: 1; } }
 @keyframes home-journey-in {
-  from { opacity: 0; transform: translate3d(34px, 8px, 0) scale(0.975) var(--journey-resting-transform); }
+  from { opacity: 0; transform: translate3d(var(--journey-entry-x), var(--journey-entry-y), 0) scale(0.975) var(--journey-resting-transform); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1) var(--journey-resting-transform); }
 }
 
@@ -194,6 +203,7 @@
   .home-hero__glow { display: none; }
   .home-hero { grid-template-columns: 1fr; min-height: 0; padding-block: 64px 70px; }
   .role-journey { --journey-resting-transform: translateZ(0); width: min(610px, 100%); margin-inline: auto; aspect-ratio: 1.35; }
+  .home-page .role-journey { --journey-entry-x: 0; --journey-entry-y: 24px; }
   .home-section__heading--split { align-items: flex-start; flex-direction: column; gap: 10px; }
   .home-intelligence__inner, .resume-feature { grid-template-columns: 1fr; }
   .resume-feature__visual { order: 2; min-height: 360px; }
@@ -228,6 +238,22 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-page > .public-header,
+  .home-page .home-hero__glow,
+  .home-page .home-hero__copy > .home-eyebrow,
+  .home-page .home-title__text,
+  .home-page .home-hero__description,
+  .home-page .home-actions > .button,
+  .home-page .home-trust-note {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .home-page .role-journey {
+    opacity: 1;
+    transform: var(--journey-resting-transform);
+    animation: none;
+  }
   .role-journey::before, .role-journey::after,
   .role-journey__path-glow, .role-journey__path-base,
   .role-journey__checkpoint, .role-journey__destination {

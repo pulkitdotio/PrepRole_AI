@@ -30,7 +30,7 @@ const reportDetails = [
 
 function Home() {
   return (
-    <div className="public-page">
+    <div className="public-page home-page">
       <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@500&display=swap" precedence="font" />
       <a className="skip-link" href="#main-content">Skip to content</a>
       <PublicHeader />
@@ -39,7 +39,14 @@ function Home() {
           <div className="home-hero__glow" aria-hidden="true" />
           <div className="home-hero__copy">
             <p className="home-eyebrow"><span>Role preparation, made personal</span></p>
-            <h1 id="home-title">Prepare for the role. <span>Not just the interview.</span></h1>
+            <h1 id="home-title" className="home-title">
+              <span className="home-title__line">
+                <span className="home-title__text">Prepare for the role.</span>
+              </span>
+              <span className="home-title__line home-title__line--muted">
+                <span className="home-title__text">Not just the interview.</span>
+              </span>
+            </h1>
             <p className="home-hero__description">
               Turn your resume and a target job into a practical interview report, focused questions,
               skill-gap insights, and a tailored resume.

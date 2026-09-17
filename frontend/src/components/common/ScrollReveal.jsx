@@ -22,8 +22,10 @@ function ScrollReveal({
 
     element.classList.add('scroll-reveal--pending');
     let observer;
+    let fallbackTimer;
 
     const reveal = () => {
+      window.clearTimeout(fallbackTimer);
       element.classList.remove('scroll-reveal--pending');
       element.classList.add('scroll-reveal--visible');
       observer?.disconnect();
@@ -41,12 +43,16 @@ function ScrollReveal({
 
     observer.observe(element);
     element.addEventListener('focusin', reveal);
+    // Ensure content cannot remain hidden when a browser does not deliver
+    // intersection events (for example, during an automated full-page capture).
+    fallbackTimer = window.setTimeout(reveal, 1800 + delay);
 
     return () => {
+      window.clearTimeout(fallbackTimer);
       observer.disconnect();
       element.removeEventListener('focusin', reveal);
     };
-  }, []);
+  }, [delay]);
 
   return (
     <Component

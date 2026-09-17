@@ -108,12 +108,30 @@ function Home() {
           </div>
         </section>
 
-        <section className="home-section public-container resume-feature" aria-labelledby="resume-title">
+        <section id="tailored-resume" className="home-section public-container resume-feature" aria-labelledby="resume-title">
           <ScrollReveal className="resume-feature__visual" aria-hidden="true">
             <div className="resume-sheet">
-              <span className="resume-sheet__name" /><span className="resume-sheet__role" />
-              <i /><i /><i /><i /><i />
+              <div className="resume-sheet__header">
+                <strong>Your Name</strong>
+                <span>Software Engineer</span>
+              </div>
+              <div className="resume-sheet__section">
+                <b>Summary</b>
+                <p>Software engineer focused on reliable, user-centered web products.</p>
+              </div>
+              <div className="resume-sheet__section">
+                <b>Experience</b>
+                <strong>Frontend Engineer</strong>
+                <p>Built accessible product experiences with <mark>React</mark> and <mark>TypeScript</mark>.</p>
+                <p>Improved integrations across internal and external <mark>APIs</mark>.</p>
+              </div>
+              <div className="resume-sheet__section resume-sheet__section--skills">
+                <b>Skills</b>
+                <span>React</span><span>TypeScript</span><span>Node.js</span><span>REST APIs</span>
+              </div>
+              <div className="resume-sheet__section resume-sheet__education"><b>Education</b><i /></div>
             </div>
+            <div className="resume-keywords"><span>Role-aligned keywords</span><b>React</b><b>APIs</b><b>TypeScript</b></div>
             <div className="resume-signal"><Target size={17} /><span>Aligned to your target role</span></div>
           </ScrollReveal>
           <ScrollReveal className="resume-feature__copy" delay={90}>

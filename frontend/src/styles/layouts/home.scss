@@ -69,6 +69,33 @@
 }
 .home-trust-note { display: flex; align-items: center; gap: 8px; margin-top: 18px; color: #8d99a9; font-size: 12px; svg { flex: 0 0 auto; color: $green; } }
 
+.home-hero__visual { position: relative; min-width: 0; min-height: 500px; }
+.home-hero__visual .role-journey { position: absolute; inset: -4% -5% auto 4%; width: 100%; opacity: 0.76; }
+.hero-report {
+  position: absolute; z-index: 2; right: 1%; bottom: 4%; width: min(390px, 86%); overflow: hidden;
+  border: 1px solid rgba(202, 215, 244, 0.17); border-radius: 16px;
+  background: linear-gradient(155deg, rgba(18, 25, 36, 0.97), rgba(11, 16, 24, 0.98));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.46), 0 0 48px rgba(87, 111, 213, 0.08), inset 0 1px rgba(255, 255, 255, 0.045);
+}
+.hero-report__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 20px 16px; border-bottom: 1px solid $border; }
+.hero-report__sample, .hero-report__label { display: block; color: #8290a4; font-size: 9px; font-weight: 720; letter-spacing: 0.09em; text-transform: uppercase; }
+.hero-report__header h2 { margin-top: 6px; font-size: 14px; font-weight: 650; letter-spacing: -0.015em; }
+.hero-report__status { padding: 5px 8px; border: 1px solid rgba($green, 0.2); border-radius: $radius-pill; background: rgba($green, 0.08); color: #84dfbd; font-size: 9px; font-weight: 680; }
+.hero-report__score { display: flex; align-items: center; gap: 16px; padding: 17px 20px; border-bottom: 1px solid $border; }
+.hero-report__ring {
+  width: 58px; height: 58px; display: grid; flex: 0 0 58px; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle closest-side, #111822 79%, transparent 81% 99%), conic-gradient($accent 0 82%, rgba(255, 255, 255, 0.08) 82%);
+  box-shadow: 0 0 24px rgba($accent, 0.12);
+  strong { font-size: 15px; }
+}
+.hero-report__score > div:last-child > span { color: #c5ceda; font-size: 11px; font-weight: 650; }
+.hero-report__score p { max-width: 220px; margin-top: 4px; color: #8390a2; font-size: 10px; line-height: 1.5; }
+.hero-report__columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 17px 20px; }
+.hero-report__columns ul { display: grid; gap: 7px; padding: 0; margin: 11px 0 0; list-style: none; }
+.hero-report__columns li { display: flex; align-items: center; gap: 7px; color: #c4ccd7; font-size: 10px; svg { color: $green; } }
+.hero-report__columns .hero-report__gaps svg { color: $yellow; fill: rgba($yellow, 0.22); }
+.hero-report__footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid $border; background: rgba($accent, 0.045); color: #a9b8fa; font-size: 10px; font-weight: 650; }
+
 .home-page {
   .home-hero__glow {
     opacity: 0;
@@ -210,6 +237,8 @@
 
 @media (max-width: 1000px) {
   .home-hero { grid-template-columns: 1fr 0.95fr; gap: 32px; }
+  .home-hero__visual { min-height: 460px; }
+  .hero-report { width: min(370px, 94%); }
   .role-journey__caption { display: none; }
   .home-intelligence__inner, .resume-feature { gap: 48px; }
 }
@@ -221,7 +250,9 @@
 @media (max-width: 800px) {
   .home-hero__glow { display: none; }
   .home-hero { grid-template-columns: 1fr; min-height: 0; padding-block: 60px 68px; }
-  .role-journey { --journey-resting-transform: translateZ(0); width: min(610px, 100%); margin-inline: auto; aspect-ratio: 1.35; }
+  .home-hero__visual { width: min(620px, 100%); min-height: 470px; margin-inline: auto; }
+  .home-hero__visual .role-journey { --journey-resting-transform: translateZ(0); inset: -7% 0 auto; width: 100%; margin-inline: auto; aspect-ratio: 1.35; }
+  .hero-report { right: 3%; bottom: 0; }
   .home-page .role-journey { --journey-entry-x: 0; --journey-entry-y: 24px; }
   .home-section__heading--split { align-items: flex-start; flex-direction: column; gap: 10px; }
   .home-intelligence__inner, .resume-feature { grid-template-columns: 1fr; }
@@ -250,7 +281,10 @@
   .brand-logo__text { font-size: 14px; }
   .brand-logo__icon { width: 31px; height: 31px; }
   .home-actions .button { width: 100%; }
-  .role-journey { width: calc(100% + 8px); margin-left: -4px; aspect-ratio: 1.08; }
+  .home-hero__visual { min-height: 435px; }
+  .home-hero__visual .role-journey { width: calc(100% + 8px); margin-left: -4px; aspect-ratio: 1.08; }
+  .hero-report { right: 0; bottom: 0; width: 100%; }
+  .hero-report__columns { gap: 12px; }
   .role-journey__checkpoint text { font-size: 8px; letter-spacing: 1.1px; }
   .role-journey__destination-label { font-size: 9px !important; }
   .resume-signal { right: 12px; bottom: 22px; }

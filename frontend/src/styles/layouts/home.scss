@@ -76,6 +76,7 @@
   border: 1px solid rgba(202, 215, 244, 0.17); border-radius: 16px;
   background: linear-gradient(155deg, rgba(18, 25, 36, 0.97), rgba(11, 16, 24, 0.98));
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.46), 0 0 48px rgba(87, 111, 213, 0.08), inset 0 1px rgba(255, 255, 255, 0.045);
+  animation: report-float 7s ease-in-out 1.4s infinite;
 }
 .hero-report__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 20px 16px; border-bottom: 1px solid $border; }
 .hero-report__sample, .hero-report__label { display: block; color: #8290a4; font-size: 9px; font-weight: 720; letter-spacing: 0.09em; text-transform: uppercase; }
@@ -190,7 +191,7 @@
 .role-journey__destination-orbit--outer { stroke-dasharray: 3 7; }
 .role-journey__destination-orbit--inner { stroke: rgba(126, 154, 255, 0.38); }
 .role-journey__destination-orb { fill: url('#journey-destination'); stroke: rgba(225, 232, 255, 0.58); stroke-width: 1; }
-.role-journey__destination-core { fill: #f6f8ff; opacity: 0.88; }
+.role-journey__destination-core { fill: #f6f8ff; opacity: 0.88; animation: journey-core-pulse 3.8s ease-in-out 1.5s infinite; transform-box: fill-box; transform-origin: center; }
 .role-journey__destination-label { fill: #c8d2ff !important; font-size: 10px !important; }
 .role-journey__destination-note { fill: #65738a !important; font-size: 8px !important; }
 .role-journey__caption {
@@ -205,6 +206,8 @@
 @keyframes journey-travel { to { stroke-dashoffset: -466; } }
 @keyframes journey-checkpoint-in { to { opacity: 1; transform: translateY(0); } }
 @keyframes journey-destination-in { to { opacity: 1; transform: scale(1); } }
+@keyframes journey-core-pulse { 50% { opacity: 1; transform: scale(1.22); } }
+@keyframes report-float { 50% { transform: translate3d(0, -4px, 0); } }
 @keyframes home-enter-down { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 @keyframes home-enter-up { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 @keyframes home-title-in { to { transform: translate3d(0, 0, 0); } }
@@ -236,8 +239,8 @@
 .home-intelligence { border-block: 1px solid $border; background: linear-gradient(180deg, rgba(17, 23, 32, 0.55), rgba(10, 14, 20, 0.7)); }
 .home-intelligence__inner { display: grid; grid-template-columns: 0.82fr 1.18fr; align-items: center; gap: 90px; }
 .home-intelligence__copy { h2 { font-family: var(--font-display); font-size: clamp(28px, 3.5vw, 43px); font-weight: 500; line-height: 1.18; letter-spacing: -0.025em; } > p:not(.home-eyebrow) { max-width: 510px; margin: 20px 0 26px; font-size: 15px; } }
-.section-link { display: inline-flex; align-items: center; gap: 7px; color: #a8b8fb; font-size: 13px; font-weight: 650; transition: color $transition; &:hover { color: #d0d8ff; } }
-.report-demo { overflow: hidden; border: 1px solid $border-light; border-radius: $radius-lg; background: #0e141c; box-shadow: $shadow-float; }
+.section-link { display: inline-flex; align-items: center; gap: 7px; color: #a8b8fb; font-size: 13px; font-weight: 650; transition: color $transition; svg { transition: transform $transition; } &:hover { color: #d0d8ff; svg { transform: translateX(3px); } } }
+.report-demo { overflow: hidden; border: 1px solid $border-light; border-radius: $radius-lg; background: #0e141c; box-shadow: $shadow-float; transition: border-color $transition, box-shadow $transition; &:hover { border-color: rgba(174, 190, 255, 0.22); box-shadow: 0 26px 72px rgba(0, 0, 0, 0.34); } }
 .report-demo__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 18px; border-bottom: 1px solid $border; }
 .report-demo__title { display: flex; align-items: center; gap: 10px; min-width: 0; span, strong { display: block; } span { color: $text-muted; font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; } strong { margin-top: 4px; font-size: 12px; } }
 .report-demo__icon { width: 34px; height: 34px; display: grid !important; flex: 0 0 34px; place-items: center; border-radius: 9px; background: $accent-soft; color: #a2b3ff !important; }
@@ -284,7 +287,7 @@
 .public-footer { border-top: 1px solid $border; background: rgba(7, 10, 14, 0.7); color: $text-muted; font-size: 11px; }
 .public-footer__inner { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 30px 56px; padding-block: 36px 28px; }
 .public-footer__brand p { margin-top: 12px; color: $text-muted; font-size: 11px; }
-.public-footer__links { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 14px 24px; padding-top: 9px; color: #8996a7; a { transition: color $transition; &:hover { color: $text-primary; } } }
+.public-footer__links { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 14px 24px; padding-top: 9px; color: #8996a7; a { text-underline-offset: 4px; transition: color $transition; &:hover { color: $text-primary; text-decoration: underline; text-decoration-color: rgba($accent, 0.65); } } }
 .public-footer__copyright { grid-column: 1 / -1; padding-top: 20px; border-top: 1px solid $border; color: #657182 !important; font-size: 10px; }
 .not-found { min-height: calc(100vh - 73px); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 18px; h1 { max-width: 650px; font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.05em; } > p:not(.home-eyebrow) { max-width: 560px; } }
 
@@ -404,4 +407,5 @@
   .role-journey__path-glow { opacity: 0.34; }
   .role-journey__path-base { stroke-dashoffset: 0; }
   .role-journey__path-light { display: none; animation: none; }
+  .hero-report, .role-journey__destination-core { transform: none; animation: none; }
 }

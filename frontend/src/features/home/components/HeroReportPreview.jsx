@@ -15,7 +15,7 @@ function HeroReportPreview() {
       </header>
 
       <div className="hero-report__score">
-        <div className="hero-report__ring" aria-label="Example role match: 82 percent">
+        <div className="hero-report__ring" role="img" aria-label="Example role match: 82 percent">
           <strong>82%</strong>
         </div>
         <div>

@@ -79,7 +79,7 @@ function Home() {
               </AuthLink>
               <Link to="/#how-it-works" className="button button--secondary button--large">See how it works</Link>
             </div>
-            <div className="home-trust-note"><ShieldCheck size={15} /><span>Your reports stay in your private workspace.</span></div>
+            <div className="home-trust-note"><ShieldCheck size={15} aria-hidden="true" /><span>Your reports stay in your private workspace.</span></div>
           </div>
           <div className="home-hero__visual">
             <RoleJourney />
@@ -120,7 +120,7 @@ function Home() {
               <p className="home-eyebrow">Interview intelligence</p>
               <h2 id="intelligence-title">Know where you stand. Know what to do next.</h2>
               <p>PrepRole AI compares the role with your actual background and organizes the result into a report you can work through.</p>
-              <AuthLink to="/interviews/new" className="section-link">Create an Interview Report <ArrowRight size={15} /></AuthLink>
+              <AuthLink to="/interviews/new" className="section-link">Create an Interview Report <ArrowRight size={15} aria-hidden="true" /></AuthLink>
             </ScrollReveal>
             <ScrollReveal delay={90}>
               <InterviewReportPreview />
@@ -158,7 +158,7 @@ function Home() {
             <p className="home-eyebrow">Tailored Resume</p>
             <h2 id="resume-title">Carry the same role context into your resume.</h2>
             <p>Generate an ATS-friendly resume from the Interview Report using your original resume, self-description, and target job—without invented experience.</p>
-            <AuthLink to="/interviews/new" className="button button--secondary button--medium">Prepare and tailor <ArrowRight size={15} /></AuthLink>
+            <AuthLink to="/interviews/new" className="button button--secondary button--medium">Prepare and tailor <ArrowRight size={15} aria-hidden="true" /></AuthLink>
           </ScrollReveal>
         </section>
 
@@ -186,7 +186,7 @@ function Home() {
             <h2 id="final-title">Bring the opportunity. Leave with a plan.</h2>
             <p className="home-final__support">Upload your resume and target role to generate a focused preparation plan.</p>
           </div>
-          <AuthLink to="/interviews/new" className="button button--light button--large">Start preparing <ArrowRight size={16} /></AuthLink>
+          <AuthLink to="/interviews/new" className="button button--light button--large">Start preparing <ArrowRight size={16} aria-hidden="true" /></AuthLink>
         </ScrollReveal>
       </main>
       <footer className="public-footer">

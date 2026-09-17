@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  BarChart3,
   BriefcaseBusiness,
   FileSearch,
   MessageSquareText,
@@ -14,6 +13,7 @@ import Logo from '../../../components/common/Logo';
 import ScrollReveal from '../../../components/common/ScrollReveal';
 import AuthLink from '../../auth/components/AuthLink';
 import HeroReportPreview from '../components/HeroReportPreview';
+import InterviewReportPreview from '../components/InterviewReportPreview';
 import PublicHeader from '../components/PublicHeader';
 import RoleJourney from '../components/RoleJourney';
 
@@ -21,12 +21,6 @@ const workflow = [
   { icon: BriefcaseBusiness, number: '01', title: 'Add the role', description: 'Share the job title, description, and the context that matters to you.' },
   { icon: Upload, number: '02', title: 'Upload your resume', description: 'Use your current PDF so the analysis starts from your real experience.' },
   { icon: Route, number: '03', title: 'Follow a focused plan', description: 'Review your match, practice questions, skill gaps, and next steps.' },
-];
-
-const reportDetails = [
-  { icon: MessageSquareText, label: 'Interview questions', value: 'Technical + behavioral' },
-  { icon: Target, label: 'Skill gap analysis', value: 'Prioritized by severity' },
-  { icon: FileSearch, label: 'Tailored resume', value: 'Generated from your report' },
 ];
 
 const featureValues = [
@@ -100,7 +94,7 @@ function Home() {
           </ol>
         </section>
 
-        <section id="tools" className="home-section home-intelligence" aria-labelledby="intelligence-title">
+        <section id="interview-report" className="home-section home-intelligence" aria-labelledby="intelligence-title">
           <div className="public-container home-intelligence__inner">
             <ScrollReveal className="home-intelligence__copy">
               <p className="home-eyebrow">Interview intelligence</p>
@@ -108,15 +102,8 @@ function Home() {
               <p>PrepRole AI compares the role with your actual background and organizes the result into a report you can work through.</p>
               <AuthLink to="/interviews/new" className="section-link">Create an Interview Report <ArrowRight size={15} /></AuthLink>
             </ScrollReveal>
-            <ScrollReveal className="intelligence-panel" delay={90}>
-              <div className="intelligence-panel__header"><BarChart3 size={17} /><span>Role preparation snapshot</span></div>
-              {reportDetails.map(({ icon: Icon, label, value }) => (
-                <div className="intelligence-row" key={label}>
-                  <span className="intelligence-row__icon"><Icon size={17} /></span>
-                  <span><small>{label}</small><strong>{value}</strong></span>
-                  <ArrowRight size={15} aria-hidden="true" />
-                </div>
-              ))}
+            <ScrollReveal delay={90}>
+              <InterviewReportPreview />
             </ScrollReveal>
           </div>
         </section>

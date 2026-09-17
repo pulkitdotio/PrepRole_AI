@@ -310,7 +310,7 @@
   .home-page .role-journey { --journey-entry-x: 0; --journey-entry-y: 24px; }
   .home-section__heading--split { align-items: flex-start; flex-direction: column; gap: 10px; }
   .home-intelligence__inner, .resume-feature { grid-template-columns: 1fr; }
-  .resume-feature__visual { order: 2; min-height: 360px; }
+  .resume-feature__visual { order: 2; min-height: 420px; }
   .home-why__grid { grid-template-columns: 1fr; }
   .home-why__item { min-height: 0; }
 }
@@ -320,8 +320,8 @@
   .public-header__inner { min-height: 66px; }
   .public-header__account .button--secondary { display: none; }
   .public-header__account .button { min-height: 36px; padding-inline: 12px; font-size: 11px; }
-  .home-hero { gap: 42px; padding-block: 52px 58px; }
-  .home-title { font-size: clamp(36px, 10vw, 50px); line-height: 1.12; }
+  .home-hero { gap: 38px; padding-block: 48px 54px; }
+  .home-title { font-size: clamp(34px, 9.4vw, 48px); line-height: 1.1; }
   .home-hero__description { font-size: 15px; }
   .role-journey { aspect-ratio: 1.28; }
   .home-section { padding-block: 64px; }
@@ -330,6 +330,7 @@
   .home-workflow::before { top: 38px; bottom: 38px; left: 49px; width: 1px; height: auto; background: linear-gradient(180deg, transparent, rgba($accent, 0.3) 14%, rgba($accent, 0.3) 86%, transparent); }
   .home-workflow li { min-height: 0; padding: 25px 24px 27px; }
   .resume-feature__visual { min-height: 420px; }
+  .resume-feature__copy .button { width: 100%; }
   .home-final { align-items: flex-start; flex-direction: column; padding: 28px 24px; }
   .home-final .button { width: 100%; }
   .public-footer__inner { grid-template-columns: 1fr; }
@@ -338,12 +339,14 @@
 }
 
 @media (max-width: 430px) {
+  .public-header__inner { gap: 12px; }
   .brand-logo__text { font-size: 14px; }
   .brand-logo__icon { width: 31px; height: 31px; }
+  .public-header__account .button { padding-inline: 10px; }
   .home-actions .button { width: 100%; }
   .home-value-strip ul { grid-template-columns: 1fr; }
   .home-value-strip p { align-items: flex-start; white-space: normal; }
-  .home-hero__visual { min-height: 435px; }
+  .home-hero__visual { min-height: 400px; }
   .home-hero__visual .role-journey { width: calc(100% + 8px); margin-left: -4px; aspect-ratio: 1.08; }
   .hero-report { right: 0; bottom: 0; width: 100%; }
   .hero-report__columns { gap: 12px; }
@@ -355,6 +358,25 @@
   .role-journey__destination-label { font-size: 9px !important; }
   .resume-signal { right: 12px; bottom: 22px; }
   .resume-keywords { top: 25px; right: 8px; }
+  .home-final { margin-block: 48px 56px; }
+  .public-footer__links { align-items: flex-start; flex-direction: column; gap: 12px; }
+}
+
+@media (max-width: 380px) {
+  .public-container { width: calc(100% - 24px); }
+  .brand-logo { gap: 7px; }
+  .brand-logo__text { font-size: 13px; }
+  .public-header__account .button { min-height: 34px; font-size: 10px; }
+  .home-title { font-size: 33px; }
+  .home-eyebrow { font-size: 11px; }
+  .home-hero__visual { min-height: 386px; }
+  .hero-report__header, .hero-report__score, .hero-report__columns { padding-inline: 16px; }
+  .hero-report__columns { gap: 8px; }
+  .hero-report__columns li { font-size: 9px; }
+  .report-demo__skills { gap: 10px; padding-inline: 14px; }
+  .resume-sheet { width: 260px; min-height: 342px; padding: 23px 24px; }
+  .resume-keywords { width: 132px; }
+  .resume-signal { font-size: 9px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

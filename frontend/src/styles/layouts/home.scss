@@ -96,6 +96,12 @@
 .hero-report__columns .hero-report__gaps svg { color: $yellow; fill: rgba($yellow, 0.22); }
 .hero-report__footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid $border; background: rgba($accent, 0.045); color: #a9b8fa; font-size: 10px; font-weight: 650; }
 
+.home-value-strip { border-block: 1px solid $border; background: rgba(14, 19, 27, 0.54); }
+.home-value-strip__inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 76px; }
+.home-value-strip ul { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 26px; padding: 0; margin: 0; list-style: none; }
+.home-value-strip li { display: inline-flex; align-items: center; gap: 8px; color: #aab5c3; font-size: 12px; white-space: nowrap; svg { color: #8fa4fc; } }
+.home-value-strip p { display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto; color: #7f8c9d; font-size: 10px; white-space: nowrap; svg { color: $green; } }
+
 .home-page {
   .home-hero__glow {
     opacity: 0;
@@ -240,6 +246,7 @@
   .home-hero__visual { min-height: 460px; }
   .hero-report { width: min(370px, 94%); }
   .role-journey__caption { display: none; }
+  .home-value-strip__inner { align-items: flex-start; flex-direction: column; justify-content: center; gap: 11px; padding-block: 18px; }
   .home-intelligence__inner, .resume-feature { gap: 48px; }
 }
 
@@ -269,6 +276,7 @@
   .home-hero__description { font-size: 15px; }
   .role-journey { aspect-ratio: 1.28; }
   .home-section { padding-block: 64px; }
+  .home-value-strip ul { display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: 13px 18px; }
   .home-workflow { grid-template-columns: 1fr; }
   .home-workflow li { border-left: 0; border-top: 1px solid $border; &:first-child { border-top: 0; } }
   .resume-feature__visual { min-height: 330px; }
@@ -281,6 +289,8 @@
   .brand-logo__text { font-size: 14px; }
   .brand-logo__icon { width: 31px; height: 31px; }
   .home-actions .button { width: 100%; }
+  .home-value-strip ul { grid-template-columns: 1fr; }
+  .home-value-strip p { align-items: flex-start; white-space: normal; }
   .home-hero__visual { min-height: 435px; }
   .home-hero__visual .role-journey { width: calc(100% + 8px); margin-left: -4px; aspect-ratio: 1.08; }
   .hero-report { right: 0; bottom: 0; width: 100%; }

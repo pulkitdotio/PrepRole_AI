@@ -13,6 +13,7 @@ import { Link } from 'react-router';
 import Logo from '../../../components/common/Logo';
 import ScrollReveal from '../../../components/common/ScrollReveal';
 import AuthLink from '../../auth/components/AuthLink';
+import HeroReportPreview from '../components/HeroReportPreview';
 import PublicHeader from '../components/PublicHeader';
 import RoleJourney from '../components/RoleJourney';
 
@@ -59,7 +60,10 @@ function Home() {
             </div>
             <div className="home-trust-note"><ShieldCheck size={15} /><span>Your reports stay in your private workspace.</span></div>
           </div>
-          <RoleJourney />
+          <div className="home-hero__visual">
+            <RoleJourney />
+            <HeroReportPreview />
+          </div>
         </section>
 
         <section id="how-it-works" className="home-section public-container" aria-labelledby="how-title">

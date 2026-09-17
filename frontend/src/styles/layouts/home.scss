@@ -351,6 +351,11 @@
   .resume-sheet { min-height: 342px; padding: 23px 24px; }
 }
 
+@media (max-width: 340px) {
+  .home-title { font-size: 29px; }
+  .home-title__line { white-space: nowrap; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-page > .public-header,
   .home-page .home-hero__glow,

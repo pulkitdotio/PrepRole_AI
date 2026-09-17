@@ -2,6 +2,8 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   FileSearch,
+  Fingerprint,
+  Focus,
   MessageSquareText,
   Route,
   ShieldCheck,
@@ -28,6 +30,24 @@ const featureValues = [
   { icon: MessageSquareText, label: 'Targeted interview questions' },
   { icon: Target, label: 'Prioritized skill gaps' },
   { icon: ShieldCheck, label: 'ATS-friendly tailored resume' },
+];
+
+const differentiators = [
+  {
+    icon: Fingerprint,
+    title: 'Grounded in your experience',
+    description: 'PrepRole starts with your resume and the work you have actually done.',
+  },
+  {
+    icon: Focus,
+    title: 'Focused on one opportunity',
+    description: 'Every insight is organized around the specific role you are pursuing.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'No invented experience',
+    description: 'Resume improvements clarify and reposition what is real—never fabricate accomplishments.',
+  },
 ];
 
 function Home() {
@@ -140,6 +160,24 @@ function Home() {
             <p>Generate an ATS-friendly resume from the Interview Report using your original resume, self-description, and target job—without invented experience.</p>
             <AuthLink to="/interviews/new" className="button button--secondary button--medium">Prepare and tailor <ArrowRight size={15} /></AuthLink>
           </ScrollReveal>
+        </section>
+
+        <section className="home-section home-why" aria-labelledby="why-title">
+          <div className="public-container">
+            <ScrollReveal className="home-section__heading">
+              <p className="home-eyebrow">Why PrepRole</p>
+              <h2 id="why-title">Preparation grounded in your experience.</h2>
+              <p>Clearer positioning for the opportunity ahead, built from the experience you already have.</p>
+            </ScrollReveal>
+            <div className="home-why__grid">
+              {differentiators.map(({ icon: Icon, title, description }, index) => (
+                <ScrollReveal className="home-why__item" delay={index * 70} key={title}>
+                  <span className="home-why__icon"><Icon size={18} aria-hidden="true" /></span>
+                  <div><h3>{title}</h3><p>{description}</p></div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
         </section>
 
         <ScrollReveal as="section" className="home-final public-container" aria-labelledby="final-title">

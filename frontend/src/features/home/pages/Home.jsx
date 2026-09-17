@@ -147,8 +147,10 @@ function Home() {
               </div>
               <div className="resume-sheet__section resume-sheet__education"><b>Education</b><i /></div>
             </div>
-            <div className="resume-keywords"><span>Role-aligned keywords</span><b>React</b><b>APIs</b><b>TypeScript</b></div>
-            <div className="resume-signal"><Target size={17} /><span>Aligned to your target role</span></div>
+            <div className="resume-feature__signals">
+              <div className="resume-keywords"><span>Role-aligned keywords</span><b>React</b><b>APIs</b><b>TypeScript</b></div>
+              <div className="resume-signal"><Target size={17} /><span>Aligned to your target role</span></div>
+            </div>
           </ScrollReveal>
           <ScrollReveal className="resume-feature__copy" delay={90}>
             <p className="home-eyebrow">Tailored Resume</p>

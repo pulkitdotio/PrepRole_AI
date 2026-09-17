@@ -68,34 +68,7 @@
   .button:hover svg { transform: translateX(3px); }
 }
 .home-trust-note { display: flex; align-items: center; gap: 8px; margin-top: 18px; color: #8d99a9; font-size: 12px; svg { flex: 0 0 auto; color: $green; } }
-
-.home-hero__visual { position: relative; min-width: 0; min-height: 500px; }
-.home-hero__visual .role-journey { position: absolute; inset: -4% -5% auto 4%; width: 100%; opacity: 0.76; }
-.hero-report {
-  position: absolute; z-index: 2; right: 1%; bottom: 4%; width: min(390px, 86%); overflow: hidden;
-  border: 1px solid rgba(202, 215, 244, 0.17); border-radius: 16px;
-  background: linear-gradient(155deg, rgba(18, 25, 36, 0.97), rgba(11, 16, 24, 0.98));
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.46), 0 0 48px rgba(87, 111, 213, 0.08), inset 0 1px rgba(255, 255, 255, 0.045);
-  animation: report-float 7s ease-in-out 1.4s infinite;
-}
-.hero-report__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 20px 16px; border-bottom: 1px solid $border; }
-.hero-report__sample, .hero-report__label { display: block; color: #8290a4; font-size: 9px; font-weight: 720; letter-spacing: 0.09em; text-transform: uppercase; }
-.hero-report__header h2 { margin-top: 6px; font-size: 14px; font-weight: 650; letter-spacing: -0.015em; }
-.hero-report__status { padding: 5px 8px; border: 1px solid rgba($green, 0.2); border-radius: $radius-pill; background: rgba($green, 0.08); color: #84dfbd; font-size: 9px; font-weight: 680; }
-.hero-report__score { display: flex; align-items: center; gap: 16px; padding: 17px 20px; border-bottom: 1px solid $border; }
-.hero-report__ring {
-  width: 58px; height: 58px; display: grid; flex: 0 0 58px; place-items: center; border-radius: 50%;
-  background: radial-gradient(circle closest-side, #111822 79%, transparent 81% 99%), conic-gradient($accent 0 82%, rgba(255, 255, 255, 0.08) 82%);
-  box-shadow: 0 0 24px rgba($accent, 0.12);
-  strong { font-size: 15px; }
-}
-.hero-report__score > div:last-child > span { color: #c5ceda; font-size: 11px; font-weight: 650; }
-.hero-report__score p { max-width: 220px; margin-top: 4px; color: #8390a2; font-size: 10px; line-height: 1.5; }
-.hero-report__columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 17px 20px; }
-.hero-report__columns ul { display: grid; gap: 7px; padding: 0; margin: 11px 0 0; list-style: none; }
-.hero-report__columns li { display: flex; align-items: center; gap: 7px; color: #c4ccd7; font-size: 10px; svg { color: $green; } }
-.hero-report__columns .hero-report__gaps svg { color: $yellow; fill: rgba($yellow, 0.22); }
-.hero-report__footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid $border; background: rgba($accent, 0.045); color: #a9b8fa; font-size: 10px; font-weight: 650; }
+.home-hero > .role-journey { width: 106%; max-width: 620px; margin-left: -2%; justify-self: center; }
 
 .home-value-strip { border-block: 1px solid $border; background: rgba(14, 19, 27, 0.54); }
 .home-value-strip__inner { display: flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 76px; }
@@ -160,14 +133,14 @@
 .role-journey__ambient--one { right: 1%; top: 1%; width: 46%; aspect-ratio: 1; background: rgba(109, 140, 255, 0.12); filter: blur(42px); }
 .role-journey__ambient--two { left: 14%; bottom: 8%; width: 34%; aspect-ratio: 1; background: rgba(85, 214, 208, 0.055); filter: blur(38px); }
 .role-journey__art { display: block; width: 100%; height: 100%; overflow: visible; }
-.role-journey__grid { stroke: rgba(172, 192, 224, 0.06); stroke-width: 1; }
-.role-journey__particles { fill: #a9b9ff; opacity: 0.32; }
+.role-journey__grid { stroke: rgba(172, 192, 224, 0.075); stroke-width: 1; }
+.role-journey__particles { fill: #a9b9ff; opacity: 0.38; }
 .role-journey__path-glow {
   stroke: url('#journey-path'); stroke-width: 18; stroke-linecap: round; opacity: 0;
   filter: url('#journey-soft-glow'); animation: journey-path-in 750ms 140ms ease-out forwards;
 }
 .role-journey__path-base {
-  stroke: rgba(151, 169, 214, 0.22); stroke-width: 5; stroke-linecap: round;
+  stroke: rgba(151, 169, 214, 0.28); stroke-width: 5; stroke-linecap: round;
   stroke-dasharray: 720; stroke-dashoffset: 720; animation: journey-draw 900ms 100ms ease-out forwards;
 }
 .role-journey__path-light {
@@ -179,11 +152,11 @@
 .role-journey__checkpoint--prepare { animation-delay: 390ms; }
 .role-journey__checkpoint--practice { animation-delay: 530ms; }
 .role-journey__checkpoint--improve { animation-delay: 670ms; }
-.role-journey__checkpoint-halo { fill: rgba($accent, 0.055); stroke: rgba($accent, 0.11); }
+.role-journey__checkpoint-halo { fill: rgba($accent, 0.07); stroke: rgba($accent, 0.15); }
 .role-journey__checkpoint-ring { fill: #101722; stroke: url('#journey-path'); stroke-width: 1.6; }
 .role-journey__checkpoint-core { fill: #c4d0ff; }
 .role-journey__checkpoint text, .role-journey__destination text {
-  fill: #8290a5; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.6px;
+  fill: #919eb0; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.6px;
 }
 .role-journey__destination { opacity: 0; transform: scale(0.94); transform-box: fill-box; transform-origin: center; animation: journey-destination-in 600ms 760ms ease-out forwards; }
 .role-journey__destination-glow { fill: url('#journey-destination'); opacity: 0.48; filter: url('#journey-orb-glow'); }
@@ -193,7 +166,7 @@
 .role-journey__destination-orb { fill: url('#journey-destination'); stroke: rgba(225, 232, 255, 0.58); stroke-width: 1; }
 .role-journey__destination-core { fill: #f6f8ff; opacity: 0.88; animation: journey-core-pulse 3.8s ease-in-out 1.5s infinite; transform-box: fill-box; transform-origin: center; }
 .role-journey__destination-label { fill: #c8d2ff !important; font-size: 10px !important; }
-.role-journey__destination-note { fill: #65738a !important; font-size: 8px !important; }
+.role-journey__destination-note { fill: #7b889c !important; font-size: 8px !important; }
 .role-journey__caption {
   position: absolute; right: 5%; bottom: 5%; display: flex; align-items: center; gap: 9px; color: #667387;
   font-size: 8px; font-weight: 650; letter-spacing: 0.09em; text-transform: uppercase;
@@ -207,7 +180,6 @@
 @keyframes journey-checkpoint-in { to { opacity: 1; transform: translateY(0); } }
 @keyframes journey-destination-in { to { opacity: 1; transform: scale(1); } }
 @keyframes journey-core-pulse { 50% { opacity: 1; transform: scale(1.22); } }
-@keyframes report-float { 50% { transform: translate3d(0, -4px, 0); } }
 @keyframes home-enter-down { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 @keyframes home-enter-up { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 @keyframes home-title-in { to { transform: translate3d(0, 0, 0); } }
@@ -293,8 +265,7 @@
 
 @media (max-width: 1000px) {
   .home-hero { grid-template-columns: 1fr 0.95fr; gap: 32px; }
-  .home-hero__visual { min-height: 460px; }
-  .hero-report { width: min(370px, 94%); }
+  .home-hero > .role-journey { width: 108%; }
   .role-journey__caption { display: none; }
   .home-value-strip__inner { align-items: flex-start; flex-direction: column; justify-content: center; gap: 11px; padding-block: 18px; }
   .home-intelligence__inner, .resume-feature { gap: 48px; }
@@ -307,9 +278,7 @@
 @media (max-width: 800px) {
   .home-hero__glow { display: none; }
   .home-hero { grid-template-columns: 1fr; min-height: 0; padding-block: 60px 68px; }
-  .home-hero__visual { width: min(620px, 100%); min-height: 470px; margin-inline: auto; }
-  .home-hero__visual .role-journey { --journey-resting-transform: translateZ(0); inset: -7% 0 auto; width: 100%; margin-inline: auto; aspect-ratio: 1.35; }
-  .hero-report { right: 3%; bottom: 0; }
+  .home-hero > .role-journey { --journey-resting-transform: translateZ(0); width: min(620px, 100%); margin: -18px auto -20px; aspect-ratio: 1.35; }
   .home-page .role-journey { --journey-entry-x: 0; --journey-entry-y: 24px; }
   .home-section__heading--split { align-items: flex-start; flex-direction: column; gap: 10px; }
   .home-intelligence__inner, .resume-feature { grid-template-columns: 1fr; }
@@ -326,7 +295,7 @@
   .home-hero { gap: 38px; padding-block: 48px 54px; }
   .home-title { font-size: clamp(34px, 9.4vw, 48px); line-height: 1.1; }
   .home-hero__description { font-size: 15px; }
-  .role-journey { aspect-ratio: 1.28; }
+  .home-hero > .role-journey { aspect-ratio: 1.22; margin-block: -10px -16px; }
   .home-section { padding-block: 64px; }
   .home-value-strip ul { display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: 13px 18px; }
   .home-workflow { grid-template-columns: 1fr; }
@@ -349,10 +318,7 @@
   .home-actions .button { width: 100%; }
   .home-value-strip ul { grid-template-columns: 1fr; }
   .home-value-strip p { align-items: flex-start; white-space: normal; }
-  .home-hero__visual { min-height: 400px; }
-  .home-hero__visual .role-journey { width: calc(100% + 8px); margin-left: -4px; aspect-ratio: 1.08; }
-  .hero-report { right: 0; bottom: 0; width: 100%; }
-  .hero-report__columns { gap: 12px; }
+  .home-hero > .role-journey { width: calc(100% + 8px); margin: -4px 0 -10px -4px; aspect-ratio: 1.08; }
   .report-demo__overview { grid-template-columns: 1fr; }
   .report-demo__match { border-right: 0; border-bottom: 1px solid $border; }
   .report-demo__skills { padding-inline: 17px; }
@@ -372,10 +338,6 @@
   .public-header__account .button { min-height: 34px; font-size: 10px; }
   .home-title { font-size: 33px; }
   .home-eyebrow { font-size: 11px; }
-  .home-hero__visual { min-height: 386px; }
-  .hero-report__header, .hero-report__score, .hero-report__columns { padding-inline: 16px; }
-  .hero-report__columns { gap: 8px; }
-  .hero-report__columns li { font-size: 9px; }
   .report-demo__skills { gap: 10px; padding-inline: 14px; }
   .resume-sheet { width: 260px; min-height: 342px; padding: 23px 24px; }
   .resume-keywords { width: 132px; }
@@ -407,5 +369,5 @@
   .role-journey__path-glow { opacity: 0.34; }
   .role-journey__path-base { stroke-dashoffset: 0; }
   .role-journey__path-light { display: none; animation: none; }
-  .hero-report, .role-journey__destination-core { transform: none; animation: none; }
+  .role-journey__destination-core { transform: none; animation: none; }
 }

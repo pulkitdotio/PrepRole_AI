@@ -14,7 +14,8 @@ function PublicHeader() {
         <Link to="/" aria-label="PrepRole AI home"><Logo /></Link>
         <nav className="public-header__product" aria-label="Product navigation">
           <Link to="/#how-it-works">How it works</Link>
-          <Link to="/#tools">Interview Report</Link>
+          <Link to="/#interview-report">Interview Report</Link>
+          <Link to="/#tailored-resume">Tailored Resume</Link>
         </nav>
         <nav className="public-header__account" aria-label="Account navigation">
           {loading ? (

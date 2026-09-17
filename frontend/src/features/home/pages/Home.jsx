@@ -29,6 +29,13 @@ const reportDetails = [
   { icon: FileSearch, label: 'Tailored resume', value: 'Generated from your report' },
 ];
 
+const featureValues = [
+  { icon: FileSearch, label: 'Resume-aware analysis' },
+  { icon: MessageSquareText, label: 'Targeted interview questions' },
+  { icon: Target, label: 'Prioritized skill gaps' },
+  { icon: ShieldCheck, label: 'ATS-friendly tailored resume' },
+];
+
 function Home() {
   return (
     <div className="public-page home-page">
@@ -63,6 +70,17 @@ function Home() {
           <div className="home-hero__visual">
             <RoleJourney />
             <HeroReportPreview />
+          </div>
+        </section>
+
+        <section className="home-value-strip" aria-label="PrepRole capabilities">
+          <div className="public-container home-value-strip__inner">
+            <ul>
+              {featureValues.map(({ icon: Icon, label }) => (
+                <li key={label}><Icon size={15} aria-hidden="true" /><span>{label}</span></li>
+              ))}
+            </ul>
+            <p><ShieldCheck size={14} aria-hidden="true" />Your report stays in your private workspace.</p>
           </div>
         </section>
 

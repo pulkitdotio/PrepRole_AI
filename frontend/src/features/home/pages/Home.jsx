@@ -181,11 +181,26 @@ function Home() {
         </section>
 
         <ScrollReveal as="section" className="home-final public-container" aria-labelledby="final-title">
-          <div><p className="home-eyebrow">Your next role deserves focus</p><h2 id="final-title">Bring the opportunity. Leave with a plan.</h2></div>
+          <div>
+            <p className="home-eyebrow">Your next role deserves focus</p>
+            <h2 id="final-title">Bring the opportunity. Leave with a plan.</h2>
+            <p className="home-final__support">Upload your resume and target role to generate a focused preparation plan.</p>
+          </div>
           <AuthLink to="/interviews/new" className="button button--light button--large">Start preparing <ArrowRight size={16} /></AuthLink>
         </ScrollReveal>
       </main>
-      <footer className="public-container public-footer"><Logo /><p>Role-specific preparation, built around you.</p><Link to="/#how-it-works">How it works</Link></footer>
+      <footer className="public-footer">
+        <div className="public-container public-footer__inner">
+          <div className="public-footer__brand"><Logo /><p>Role-specific preparation, built around you.</p></div>
+          <nav className="public-footer__links" aria-label="Footer navigation">
+            <Link to="/#how-it-works">How it works</Link>
+            <Link to="/#interview-report">Interview Report</Link>
+            <Link to="/#tailored-resume">Tailored Resume</Link>
+            <Link to="/login">Login</Link>
+          </nav>
+          <p className="public-footer__copyright">© PrepRole AI</p>
+        </div>
+      </footer>
     </div>
   );
 }
